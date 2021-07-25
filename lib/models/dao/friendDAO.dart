@@ -8,25 +8,21 @@ import 'package:path/path.dart' as p;
 part 'friendDAO.g.dart';
 
 class Friends extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  TextColumn get userId => text().nullable()();
 
-  IntColumn get userId => integer()();
+  TextColumn get nickName => text().nullable()();
 
-  TextColumn get nickName => text()();
-
-  IntColumn get gender => integer()();
+  IntColumn get gender => integer().nullable()();
 
   TextColumn get logo => text().nullable()();
-
-  IntColumn get chatId => integer()();
 }
 
-class ChatRecords extends Table {
-  IntColumn get chatId => integer()();
+class MessageRecords extends Table {
+  TextColumn get userId => text().nullable()();
 
   BoolColumn get self => boolean()();
 
-  TextColumn get content => text()();
+  TextColumn get content => text().nullable()();
 
   DateTimeColumn get time => dateTime()();
 }
@@ -39,16 +35,31 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [Friends, ChatRecords])
+@UseMoor(tables: [Friends, MessageRecords])
 class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
-  Future<int> insertChatContent(ChatRecordsCompanion chatRecord) {
-    return into(chatRecords).insert(chatRecord);
+  void delDatabase() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    file.delete();
   }
 
-  Future<List<ChatRecord>> get searchChatRecords =>
-      (select(chatRecords)..where((tbl) => tbl.chatId.equals(10086))).get();
+  Future<int> insertChatContent(MessageRecord msgRC) {
+    return into(messageRecords).insert(msgRC);
+  }
+
+  Future<int> insertFriends(FriendsCompanion friendsCompanion) {
+    return into(friends).insert(friendsCompanion);
+  }
+
+  Future<List<MessageRecord>> getChatContent(String userId) {
+    return (select(messageRecords)
+          ..where(
+            (tbl) => tbl.userId.equals(userId),
+          ))
+        .get();
+  }
 
   @override
   int get schemaVersion => 1;

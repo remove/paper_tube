@@ -3,6 +3,8 @@ PODS:
   - HydraAsync (2.0.6)
   - path_provider (0.0.1):
     - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
   - sqlite3 (3.35.5):
     - sqlite3/common (= 3.35.5)
   - sqlite3/common (3.35.5)
@@ -24,12 +26,13 @@ PODS:
   - tencent_im_sdk_plugin (1.0.5):
     - Flutter
     - HydraAsync
-    - TXIMSDK_Plus_iOS (= 5.4.666)
-  - TXIMSDK_Plus_iOS (5.4.666)
+    - TXIMSDK_Plus_iOS (= 5.5.892)
+  - TXIMSDK_Plus_iOS (5.5.892)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - tencent_im_sdk_plugin (from `.symlinks/plugins/tencent_im_sdk_plugin/ios`)
 
@@ -44,6 +47,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   tencent_im_sdk_plugin:
@@ -53,10 +58,11 @@ SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   HydraAsync: 8d589bd725b0224f899afafc9a396327405f8063
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqlite3: 75da32fd4e3574f6c38566a9f0114cfe792c8db5
   sqlite3_flutter_libs: aedb7b6ba191f9a052dcef77691cf5d37437431c
-  tencent_im_sdk_plugin: 417c4ea31b380f6d6811ff260c2cbcea2ec1c6fc
-  TXIMSDK_Plus_iOS: 4db13c8646d4f58d8ae558488f9523a2efd4ef6a
+  tencent_im_sdk_plugin: de881f67e4b104de8d92a1ed77522e69ef3afbf3
+  TXIMSDK_Plus_iOS: 4ab1358f0b3f25d23020477cb930a69e56914b29
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

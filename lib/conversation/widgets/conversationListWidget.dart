@@ -7,25 +7,33 @@ class ContactListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            child: Image.network(
-                "https://cdn.jsdelivr.net/gh/remove/remove@main/Avatar.jpeg"),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        Navigator.of(context).push(
+          AeroPageRoute(
+            builder: (context) {
+              return ContactPage(
+                userId: "aero2",
+                nickName: "老婆仔",
+                avatarUrl:
+                    "https://cdn.jsdelivr.net/gh/remove/remove@main/lp.png",
+              );
+            },
           ),
-          Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).push(
-                  AeroPageRoute(
-                    builder: (context) => ContactPage(),
-                  ),
-                );
-              },
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              child: Image.network(
+                "https://cdn.jsdelivr.net/gh/remove/remove@main/lp.png",
+              ),
+            ),
+            Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Column(
@@ -33,7 +41,7 @@ class ContactListWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Ayase",
+                      "老婆仔",
                       style: TextStyle(
                         color: CupertinoTheme.brightnessOf(context) ==
                                 Brightness.light
@@ -42,7 +50,7 @@ class ContactListWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "同じように笑い返していたのに,くだらねえ いつになりゃ終わる？",
+                      "傻逼女人",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
@@ -54,28 +62,28 @@ class ContactListWidget extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            constraints:
-                BoxConstraints(minWidth: 20, minHeight: 20, maxHeight: 20),
-            padding: EdgeInsets.all(3),
-            child: Text(
-              "1",
-              style: TextStyle(color: Colors.white, fontSize: 12),
+            Container(
+              alignment: Alignment.center,
+              constraints:
+                  BoxConstraints(minWidth: 20, minHeight: 20, maxHeight: 20),
+              padding: EdgeInsets.all(3),
+              child: Text(
+                "1",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 70, 95, 1),
+                borderRadius: BorderRadius.all(Radius.circular(6)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Color.fromRGBO(255, 70, 95, 0.3),
+                      blurRadius: 8,
+                      offset: Offset(1, 1))
+                ],
+              ),
             ),
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(255, 70, 95, 1),
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(255, 70, 95, 0.3),
-                    blurRadius: 8,
-                    offset: Offset(1, 1))
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
