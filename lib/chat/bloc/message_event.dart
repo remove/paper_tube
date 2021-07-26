@@ -6,7 +6,13 @@ abstract class MessageEvent {}
 class MessageLoadCompleted extends MessageEvent {}
 
 class MessageReceivedFromIMCore extends MessageEvent {
-  MessageReceivedFromIMCore(this.messageRecord);
-
   final MessageRecord messageRecord;
+
+  MessageReceivedFromIMCore(this.messageRecord);
+}
+
+class MessageReceivedFromKeyBoard extends MessageEvent {
+  final String text;
+
+  MessageReceivedFromKeyBoard(this.text);
 }

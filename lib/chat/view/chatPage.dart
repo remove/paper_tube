@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paper_tube/models/dao/get_database.dart';
+import 'package:paper_tube/models/friend_dao.dart';
+import 'package:paper_tube/models/get_database.dart';
 import 'package:paper_tube/chat/bloc/message_bloc.dart';
 import 'package:paper_tube/chat/widgets/inputBar.dart';
 import 'package:paper_tube/chat/widgets/message_bubble.dart';
-import 'package:paper_tube/models/dao/friendDAO.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({
@@ -53,9 +53,10 @@ class _ContactPageState extends State<ContactPage> {
                 Text(
                   "在线",
                   style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.normal),
+                    fontSize: 11,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.normal,
+                  ),
                 )
               ],
             ),

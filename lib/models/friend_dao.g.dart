@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'friendDAO.dart';
+part of 'friend_dao.dart';
 
 // **************************************************************************
 // MoorGenerator

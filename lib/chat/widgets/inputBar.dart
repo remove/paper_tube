@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paper_tube/chat/bloc/message_bloc.dart';
 
 class InputBar extends StatefulWidget {
   const InputBar({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class InputBarState extends State<InputBar> {
   final int _animationDuration = 350;
   final Curve _curve = Curves.linearToEaseOut;
   final FocusNode _focusNode = FocusNode();
+  final TextEditingController _controller = TextEditingController();
   OpenWith open = OpenWith.keyBroad;
   bool lpVoice = false;
   bool tapIng = false;
@@ -113,7 +115,14 @@ class InputBarState extends State<InputBar> {
             width: _getSize(OpenWith.keyBroad),
             child: inputIng
                 ? CupertinoTextField(
-                    dragStartBehavior: DragStartBehavior.start,
+                    controller: _controller,
+                    onSubmitted: (value) {
+                      BlocProvider.of<MessageBloc>(context).add(
+                        MessageReceivedFromKeyBoard(value),
+                      );
+                      _controller.clear();
+                    },
+                    keyboardType: TextInputType.text,
                     padding: EdgeInsets.fromLTRB(8, 13, 0, 12),
                     focusNode: _focusNode,
                     decoration: inputBoxDecoration(),

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:moor/moor.dart';
-import 'package:paper_tube/models/dao/get_database.dart';
-import 'package:paper_tube/models/dao/friendDAO.dart';
+import 'package:paper_tube/models/friend_dao.dart';
+import 'package:paper_tube/models/get_database.dart';
 import 'package:paper_tube/utils/GenerateTestUserSig.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimAdvancedMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
@@ -60,8 +60,8 @@ class IMCore {
   }
 
   ///消息监听
-  messageListener() async {
-    _manager.getMessageManager().addAdvancedMsgListener(
+  messageListener() {
+    _manager.v2TIMMessageManager.addAdvancedMsgListener(
       listener: V2TimAdvancedMsgListener(
         onRecvNewMessage: (msg) {
           ///收到新消息添加到新消息流
@@ -74,6 +74,18 @@ class IMCore {
         },
       ),
     );
+  }
+
+  ///发送消息给好友
+  sendMessage(String text, String receiver) async {
+    print("IMCore发送消息");
+    V2TimValueCallback<V2TimMessage> callback =
+        await _manager.v2TIMMessageManager.sendTextMessage(
+      text: text,
+      receiver: receiver,
+      groupID: "",
+    );
+    print("消息回调" + callback.toJson().toString());
   }
 
   ///获取好友

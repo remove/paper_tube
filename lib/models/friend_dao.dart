@@ -5,7 +5,7 @@ import 'package:moor/moor.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
-part 'friendDAO.g.dart';
+part 'friend_dao.g.dart';
 
 class Friends extends Table {
   TextColumn get userId => text().nullable()();
