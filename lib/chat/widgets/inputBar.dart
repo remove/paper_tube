@@ -117,10 +117,12 @@ class InputBarState extends State<InputBar> {
                 ? CupertinoTextField(
                     controller: _controller,
                     onSubmitted: (value) {
-                      BlocProvider.of<MessageBloc>(context).add(
-                        MessageReceivedFromKeyBoard(value),
-                      );
-                      _controller.clear();
+                      if (value != "") {
+                        BlocProvider.of<MessageBloc>(context).add(
+                          MessageReceivedFromKeyBoard(value),
+                        );
+                        _controller.clear();
+                      }
                     },
                     keyboardType: TextInputType.text,
                     padding: EdgeInsets.fromLTRB(8, 13, 0, 12),

@@ -8,8 +8,8 @@ import 'package:paper_tube/chat/bloc/message_bloc.dart';
 import 'package:paper_tube/chat/widgets/inputBar.dart';
 import 'package:paper_tube/chat/widgets/message_bubble.dart';
 
-class ContactPage extends StatefulWidget {
-  const ContactPage({
+class ContactView extends StatefulWidget {
+  const ContactView({
     Key? key,
     required this.userId,
     required this.nickName,
@@ -20,10 +20,10 @@ class ContactPage extends StatefulWidget {
   final String avatarUrl;
 
   @override
-  _ContactPageState createState() => _ContactPageState();
+  _ContactViewState createState() => _ContactViewState();
 }
 
-class _ContactPageState extends State<ContactPage> {
+class _ContactViewState extends State<ContactView> {
   GlobalKey<InputBarState> _inputKey = GlobalKey();
   ScrollController _scrollController = ScrollController();
   List<MessageRecord> _messageList = [];

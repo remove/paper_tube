@@ -16,6 +16,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   final String userId;
+  final IMCore _imCore = IMCore();
+  final GetDatabase _database = GetDatabase();
 
   @override
   Stream<MessageState> mapEventToState(
@@ -26,7 +28,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     } else if (event is MessageReceivedFromIMCore) {
       yield MessageReceived(event.messageRecord);
     } else if (event is MessageReceivedFromKeyBoard) {
-      print("BLOC收到键盘消息");
       _receivedNewMessageFromKeyboard(event.text);
       yield MessageReceived(
         MessageRecord(
@@ -40,7 +41,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   _receiveNewMessageFromIMCore() {
-    IMCore().messageStream.stream.listen((event) {
+    _imCore.messageStream.stream.listen((event) {
       this.add(
         MessageReceivedFromIMCore(
           MessageRecord(
@@ -54,21 +55,21 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     });
   }
 
+  ///收到键盘输入发送消息
   _receivedNewMessageFromKeyboard(String text) {
     _newMessageToDatabase(text);
-    IMCore().sendMessage(text, userId);
+    _imCore.sendMessage(text, userId);
   }
 
   ///新消息写入数据库
   _newMessageToDatabase(String text) {
-    print("发送的消息写入数据库");
-    GetDatabase().myDatabase.insertChatContent(
-          MessageRecord(
-            userId: userId,
-            content: text,
-            self: true,
-            time: DateTime.now(),
-          ),
-        );
+    _database.myDatabase.insertChatContent(
+      MessageRecord(
+        userId: userId,
+        content: text,
+        self: true,
+        time: DateTime.now(),
+      ),
+    );
   }
 }

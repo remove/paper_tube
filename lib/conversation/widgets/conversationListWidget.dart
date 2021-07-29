@@ -1,9 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:paper_tube/chat/view/chatPage.dart';
+import 'package:paper_tube/chat/view/chat_view.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 
 class ContactListWidget extends StatelessWidget {
-  const ContactListWidget({Key? key}) : super(key: key);
+  const ContactListWidget({
+    Key? key,
+    required this.conversation,
+  }) : super(key: key);
+
+  final V2TimConversation conversation;
+
+  String getAvatarUrl() {
+    return conversation.faceUrl ??
+        "https://cdn.jsdelivr.net/gh/remove/remove@main/user.png";
+  }
+
+  String getNickName() {
+    return conversation.showName ?? (conversation.userID as String);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +28,10 @@ class ContactListWidget extends StatelessWidget {
         Navigator.of(context).push(
           AeroPageRoute(
             builder: (context) {
-              return ContactPage(
-                userId: "aero2",
-                nickName: "老婆仔",
-                avatarUrl:
-                    "https://cdn.jsdelivr.net/gh/remove/remove@main/lp.png",
+              return ContactView(
+                userId: conversation.userID as String,
+                nickName: getNickName(),
+                avatarUrl: getAvatarUrl(),
               );
             },
           ),
@@ -29,9 +43,7 @@ class ContactListWidget extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(12)),
-              child: Image.network(
-                "https://cdn.jsdelivr.net/gh/remove/remove@main/lp.png",
-              ),
+              child: Image.network(getAvatarUrl()),
             ),
             Expanded(
               child: Padding(
@@ -41,7 +53,7 @@ class ContactListWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "老婆仔",
+                      getNickName(),
                       style: TextStyle(
                         color: CupertinoTheme.brightnessOf(context) ==
                                 Brightness.light
@@ -50,7 +62,7 @@ class ContactListWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "傻逼女人",
+                      conversation.lastMessage?.textElem?.text ?? "",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 14,

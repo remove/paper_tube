@@ -53,6 +53,10 @@ class MyDatabase extends _$MyDatabase {
     return into(friends).insert(friendsCompanion);
   }
 
+  Future<List<Friend>> getFriendInfo(String userId) {
+    return (select(friends)..where((tbl) => tbl.userId.equals(userId))).get();
+  }
+
   Future<List<MessageRecord>> getChatContent(String userId) {
     return (select(messageRecords)
           ..where(
