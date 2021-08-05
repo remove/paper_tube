@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:moor/moor.dart';
 import 'package:paper_tube/models/friend_dao.dart';
 import 'package:paper_tube/models/get_database.dart';
 import 'package:paper_tube/utils/generate_test_user_sig.dart';
@@ -30,7 +29,7 @@ class IMCore {
   IMCore._internal() {
     _manager.initSDK(
       sdkAppID: 1400413627,
-      loglevel: LogLevel.V2TIM_LOG_INFO,
+      loglevel: LogLevel.V2TIM_LOG_NONE,
       listener: V2TimSDKListener(),
     );
     messageStream = StreamController.broadcast();
@@ -93,15 +92,16 @@ class IMCore {
   }
 
   ///获取好友列表
-  getFriendList() async {
-    V2TimValueCallback<List<V2TimFriendInfo>> friends =
+  Future<List<V2TimFriendInfo>?> getFriendList() async {
+    V2TimValueCallback<List<V2TimFriendInfo>>? friends =
         await _manager.getFriendshipManager().getFriendList();
-    if (friends.data != null) {
-      for (V2TimFriendInfo friendInfo
-          in friends.data as List<V2TimFriendInfo>) {
-        _friendsToDataBase(friendInfo);
-      }
-    }
+    return friends.data;
+    // if (friends.data != null) {
+    //   for (V2TimFriendInfo friendInfo
+    //       in friends.data as List<V2TimFriendInfo>) {
+    //     _friendsToDataBase(friendInfo);
+    //   }
+    // }
   }
 
   ///设置好友备注
@@ -137,16 +137,16 @@ class IMCore {
       ),
     );
   }
-
-  ///好友关系写入数据库
-  _friendsToDataBase(V2TimFriendInfo friendInfo) {
-    _database.insertFriends(
-      FriendsCompanion.insert(
-        logo: Value(friendInfo.userProfile?.faceUrl),
-        gender: Value(friendInfo.userProfile?.gender),
-        nickName: Value(friendInfo.userProfile?.nickName),
-        userId: Value(friendInfo.userID),
-      ),
-    );
-  }
+//
+// ///好友关系写入数据库
+// _friendsToDataBase(V2TimFriendInfo friendInfo) {
+//   _database.insertFriends(
+//     FriendsCompanion.insert(
+//       logo: Value(friendInfo.userProfile?.faceUrl),
+//       gender: Value(friendInfo.userProfile?.gender),
+//       nickName: Value(friendInfo.userProfile?.nickName),
+//       userId: Value(friendInfo.userID),
+//     ),
+//   );
+// }
 }

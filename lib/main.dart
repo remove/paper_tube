@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:paper_tube/conversation/view/conversation_view.dart';
 import 'package:paper_tube/im/im_core.dart';
+import 'package:paper_tube/parse/parse_core.dart';
 
 void main() {
   runApp(MyApp());
   IMCore();
+  ParseCore();
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +16,11 @@ class MyApp extends StatelessWidget {
       theme: CupertinoThemeData(
         primaryColor: Colors.cyan,
       ),
-      home: ConversationView(),
+      home: CupertinoPageScaffold(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      ),
     );
   }
 }

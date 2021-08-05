@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paper_tube/chat/view/chat_view.dart';
+import 'package:paper_tube/route/aero_page_route.dart';
+import 'package:paper_tube/widget/avatar.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 
 class ContactListWidget extends StatelessWidget {
@@ -10,11 +12,6 @@ class ContactListWidget extends StatelessWidget {
   }) : super(key: key);
 
   final V2TimConversation conversation;
-
-  String getAvatarUrl() {
-    return conversation.faceUrl ??
-        "https://cdn.jsdelivr.net/gh/remove/remove@main/user.png";
-  }
 
   String getNickName() {
     return conversation.showName ?? (conversation.userID as String);
@@ -28,10 +25,10 @@ class ContactListWidget extends StatelessWidget {
         Navigator.of(context).push(
           AeroPageRoute(
             builder: (context) {
-              return ContactView(
+              return ChatView(
                 userId: conversation.userID as String,
                 nickName: getNickName(),
-                avatarUrl: getAvatarUrl(),
+                avatarUrl: conversation.faceUrl,
               );
             },
           ),
@@ -43,7 +40,7 @@ class ContactListWidget extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(12)),
-              child: Image.network(getAvatarUrl()),
+              child: Avatar(avatarUrl: conversation.faceUrl),
             ),
             Expanded(
               child: Padding(
@@ -99,22 +96,4 @@ class ContactListWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class AeroPageRoute extends PageRoute with CupertinoRouteTransitionMixin {
-  AeroPageRoute({required this.builder, this.title});
-
-  final WidgetBuilder builder;
-
-  @override
-  Color? get barrierColor => Color.fromRGBO(0, 0, 0, 0.13);
-
-  @override
-  Widget buildContent(BuildContext context) => builder(context);
-
-  @override
-  final bool maintainState = true;
-
-  @override
-  final String? title;
 }

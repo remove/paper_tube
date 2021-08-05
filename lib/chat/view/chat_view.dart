@@ -7,23 +7,24 @@ import 'package:paper_tube/models/get_database.dart';
 import 'package:paper_tube/chat/bloc/message_bloc.dart';
 import 'package:paper_tube/chat/widgets/inputBar.dart';
 import 'package:paper_tube/chat/widgets/message_bubble.dart';
+import 'package:paper_tube/widget/avatar.dart';
 
-class ContactView extends StatefulWidget {
-  const ContactView({
+class ChatView extends StatefulWidget {
+  const ChatView({
     Key? key,
     required this.userId,
     required this.nickName,
-    required this.avatarUrl,
+    this.avatarUrl,
   }) : super(key: key);
   final String userId;
   final String nickName;
-  final String avatarUrl;
+  final String? avatarUrl;
 
   @override
-  _ContactViewState createState() => _ContactViewState();
+  _ChatViewState createState() => _ChatViewState();
 }
 
-class _ContactViewState extends State<ContactView> {
+class _ChatViewState extends State<ChatView> {
   GlobalKey<InputBarState> _inputKey = GlobalKey();
   ScrollController _scrollController = ScrollController();
   List<MessageRecord> _messageList = [];
@@ -64,7 +65,7 @@ class _ContactViewState extends State<ContactView> {
               padding: const EdgeInsets.only(bottom: 5, right: 5),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),
-                child: Image.network(widget.avatarUrl),
+                child: Avatar(avatarUrl: widget.avatarUrl),
               ),
             ),
             previousPageTitle: "会话",
