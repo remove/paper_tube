@@ -42,6 +42,7 @@ dependencies:
   parse_server_sdk_flutter: ^3.1.0
   image_picker: ^0.8.3
   image_cropper: ^1.4.1
+  flutter_native_splash: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -89,3 +90,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_native_splash:
+  color: "#ffffff"

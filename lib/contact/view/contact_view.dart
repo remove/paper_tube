@@ -1,9 +1,11 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:paper_tube/contact/bloc/contact_bloc.dart';
+import 'package:paper_tube/contact/view/add_friend_view.dart';
 import 'package:paper_tube/contact/view/contact_detail_view.dart';
 import 'package:paper_tube/im/im_core.dart';
 import 'package:paper_tube/route/aero_page_route.dart';
@@ -21,7 +23,7 @@ class _ContactViewState extends State<ContactView> {
   List<ContactListData> _friends = [];
   List<String> _tagList = [];
 
-  _getContactList(BuildContext context) {
+  _getContactList(BuildContext context) async {
     IMCore().getFriendList().then(
       (value) {
         if (value != null) {
@@ -47,38 +49,57 @@ class _ContactViewState extends State<ContactView> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text("联系人"),
+        border: null,
+        brightness: Brightness.light,
+        middle: const Text("联系人"),
+        trailing: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => Navigator.push(
+            context,
+            AeroPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<ContactBloc>(),
+                child: AddFriendView(),
+              ),
+            ),
+          ),
+          child: const SizedBox(
+            width: 50,
+            height: 40,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Icon(CupertinoIcons.add, size: 25),
+            ),
+          ),
+        ),
       ),
       child: SafeArea(
-        child: BlocProvider(
-          create: (context) => ContactBloc(),
-          child: BlocBuilder<ContactBloc, ContactState>(
-            builder: (context, state) {
-              if (state is ContactInitial) {
-                _getContactList(context);
-              }
-              return AzListView(
-                susItemHeight: 30,
-                susItemBuilder: (context, index) {
-                  return buildSusItem(context, index);
-                },
-                physics: AlwaysScrollableScrollPhysics(),
-                indexBarData: _tagList,
-                data: _friends,
-                itemCount: _friends.length,
-                itemBuilder: (context, index) {
-                  return buildContact(index);
-                },
-              );
-            },
-          ),
+        child: BlocBuilder<ContactBloc, ContactState>(
+          builder: (context, state) {
+            if (state is ContactInitial) {
+              _getContactList(context);
+            }
+            return AzListView(
+              susItemHeight: 30,
+              susItemBuilder: (context, index) {
+                return buildSusItem(context, index);
+              },
+              physics: AlwaysScrollableScrollPhysics(),
+              indexBarData: _tagList,
+              data: _friends,
+              itemCount: _friends.length,
+              itemBuilder: (context, index) {
+                return buildContact(index);
+              },
+            );
+          },
         ),
       ),
     );
   }
 
   Widget buildContact(int index) {
-    ContactListData contact = _friends[index];
+    final ContactListData contact = _friends[index];
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -99,6 +120,10 @@ class _ContactViewState extends State<ContactView> {
             ),
             Text(
               contact.friendRemark ?? contact.userID,
+              style:
+                  MediaQuery.of(context).platformBrightness == Brightness.dark
+                      ? const TextStyle(color: Colors.white)
+                      : const TextStyle(color: Colors.black),
             ),
           ],
         ),

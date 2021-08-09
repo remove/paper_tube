@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paper_tube/contact/bloc/contact_bloc.dart';
+import 'package:paper_tube/contact/view/contact_view.dart';
 import 'package:paper_tube/im/im_core.dart';
 import 'package:paper_tube/parse/parse_core.dart';
 
@@ -16,10 +19,9 @@ class MyApp extends StatelessWidget {
       theme: CupertinoThemeData(
         primaryColor: Colors.cyan,
       ),
-      home: CupertinoPageScaffold(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
+      home: BlocProvider(
+        create: (context) => ContactBloc(),
+        child: ContactView(),
       ),
     );
   }

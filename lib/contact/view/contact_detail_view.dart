@@ -12,88 +12,131 @@ class ContactDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: Color.fromRGBO(237, 236, 242, 1),
-      navigationBar: CupertinoNavigationBar(
-        previousPageTitle: "联系人",
-        backgroundColor: Colors.transparent,
-        trailing: Text("更多",
-            style: TextStyle(color: CupertinoTheme.of(context).primaryColor)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Avatar(avatarUrl: avatarUrl),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 20, 10, 10),
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            alignment: Alignment.topLeft,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(10)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("备注", style: TextStyle(fontSize: 15)),
-                SizedBox(height: 2),
-                Row(
-                  children: [
-                    Text(
-                      "我自己",
-                      style: TextStyle(
-                        color: CupertinoTheme.of(context).primaryColor,
+    return CupertinoTheme(
+      data: CupertinoThemeData(primaryColor: Colors.white),
+      child: CupertinoPageScaffold(
+        backgroundColor: const Color.fromRGBO(237, 236, 242, 1),
+        navigationBar: CupertinoNavigationBar(
+          brightness: Brightness.dark,
+          border: null,
+          previousPageTitle: "联系人",
+          backgroundColor: const Color.fromRGBO(0, 0, 0, .3),
+          trailing: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              showCupertinoModalPopup<void>(
+                context: context,
+                builder: (BuildContext context) => CupertinoActionSheet(
+                  title: const Text('更多'),
+                  actions: <CupertinoActionSheetAction>[
+                    CupertinoActionSheetAction(
+                      child: const Text(
+                        '删除好友',
+                        style: TextStyle(color: Colors.red),
                       ),
-                    ),
-                    SizedBox(width: 3),
-                    Icon(Icons.edit, size: 15, color: Colors.black26),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
                   ],
+                  cancelButton: CupertinoActionSheetAction(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      '取消',
+                      style: TextStyle(color: Colors.cyan),
+                    ),
+                  ),
                 ),
-              ],
+              );
+            },
+            child: const SizedBox(
+              height: 40,
+              width: 50,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: const Text(
+                  "更多",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            alignment: Alignment.topLeft,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(10)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("昵称", style: TextStyle(fontSize: 15)),
-                SizedBox(height: 2),
-                Text("Aero"),
-                Divider(),
-                Text("用户名", style: TextStyle(fontSize: 15)),
-                SizedBox(height: 2),
-                Text("removeneo"),
-              ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Avatar(avatarUrl: avatarUrl),
             ),
-          ),
-          Spacer(),
-          SafeArea(
-            child: Container(
-              margin: EdgeInsets.all(10),
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              alignment: Alignment.center,
+            Container(
+              margin: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              alignment: Alignment.topLeft,
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: CupertinoTheme.of(context).primaryColor,
-                ),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Text(
-                "发消息",
-                style: TextStyle(
-                  color: CupertinoTheme.of(context).primaryColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("备注", style: TextStyle(fontSize: 15)),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      const Text(
+                        "我自己",
+                        style: TextStyle(
+                          color: Colors.cyan,
+                        ),
+                      ),
+                      const SizedBox(width: 3),
+                      const Icon(Icons.edit, size: 15, color: Colors.black26),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              alignment: Alignment.topLeft,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("昵称", style: TextStyle(fontSize: 15)),
+                  const SizedBox(height: 2),
+                  const Text("Aero"),
+                  const Divider(),
+                  const Text("用户名", style: TextStyle(fontSize: 15)),
+                  const SizedBox(height: 2),
+                  const Text("removeneo"),
+                ],
+              ),
+            ),
+            const Spacer(),
+            SafeArea(
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.cyan),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  "发消息",
+                  style: TextStyle(color: Colors.cyan),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

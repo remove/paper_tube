@@ -6,12 +6,15 @@ import 'package:paper_tube/utils/generate_test_user_sig.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimAdvancedMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimConversationListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/friend_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_info.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_operation_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 
@@ -40,20 +43,23 @@ class IMCore {
   }
 
   login() async {
-    String userID = "aero";
-    String userSig = new GenerateTestUserSig(
-      sdkappid: 1400413627,
-      key: "dfbd4b0ecce28bb864221e1e9e3aaf6980249da4fe7385d2a79e804fe9d69af1",
-    ).genSig(
-      identifier: userID,
-      expire: 7 * 24 * 60 * 1000, // userSIg有效期
-    );
-    V2TimCallback res = await _manager.login(
-      userID: userID,
-      userSig: userSig,
-    );
-    print("登陆" + res.desc);
-    getFriendList();
+    V2TimValueCallback<int> state = await _manager.getLoginStatus();
+    if (state.data == 3) {
+      String userID = "aero";
+      String userSig = new GenerateTestUserSig(
+        sdkappid: 1400413627,
+        key: "dfbd4b0ecce28bb864221e1e9e3aaf6980249da4fe7385d2a79e804fe9d69af1",
+      ).genSig(
+        identifier: userID,
+        expire: 7 * 24 * 60 * 1000, // userSIg有效期
+      );
+      V2TimCallback res = await _manager.login(
+        userID: userID,
+        userSig: userSig,
+      );
+      print("登陆" + res.desc);
+      getFriendList();
+    }
   }
 
   ///消息监听
@@ -73,6 +79,7 @@ class IMCore {
     );
   }
 
+  ///会话列表监听
   conversationListener() {
     _manager.v2ConversationManager.setConversationListener(
         listener: V2TimConversationListener(
@@ -80,6 +87,25 @@ class IMCore {
         conversationStream.add(conversationList[0]);
       },
     ));
+  }
+
+  // friendListener() {
+  //   _manager.v2TIMFriendshipManager
+  //       .setFriendListener(listener: V2TimFriendshipListener(
+  //
+  //   ));
+  // }
+
+  Future<V2TimUserFullInfo> getUserInfo(String userId) async {
+    return (await _manager.getUsersInfo(userIDList: [userId])).data![0];
+  }
+
+  Future<V2TimValueCallback<V2TimFriendOperationResult>> addFriend(
+      String userID) async {
+    return await _manager.v2TIMFriendshipManager.addFriend(
+      userID: userID,
+      addType: FriendType.V2TIM_FRIEND_TYPE_BOTH,
+    );
   }
 
   ///发送消息给好友
