@@ -3,7 +3,9 @@ part of 'message_bloc.dart';
 @immutable
 abstract class MessageEvent {}
 
-class MessageLoadCompleted extends MessageEvent {}
+class MessageHistoryLoadedFromDatabase extends MessageEvent {}
+
+class MessageUILoadedCompleted extends MessageEvent {}
 
 class MessageReceivedFromIMCore extends MessageEvent {
   final MessageRecord messageRecord;
@@ -11,8 +13,15 @@ class MessageReceivedFromIMCore extends MessageEvent {
   MessageReceivedFromIMCore(this.messageRecord);
 }
 
-class MessageReceivedFromKeyBoard extends MessageEvent {
+class MessageReceivedTextFromUI extends MessageEvent {
   final String text;
 
-  MessageReceivedFromKeyBoard(this.text);
+  MessageReceivedTextFromUI(this.text);
+}
+
+class MessageMoreHistoryLoad extends MessageEvent {
+  final int limit;
+  final int offset;
+
+  MessageMoreHistoryLoad(this.limit, this.offset);
 }

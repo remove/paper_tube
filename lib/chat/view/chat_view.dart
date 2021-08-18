@@ -1,22 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:paper_tube/models/friend_dao.dart';
-import 'package:paper_tube/models/get_database.dart';
 import 'package:paper_tube/chat/bloc/message_bloc.dart';
 import 'package:paper_tube/chat/widgets/inputBar.dart';
 import 'package:paper_tube/chat/widgets/message_bubble.dart';
+import 'package:paper_tube/models/friend_dao.dart';
 import 'package:paper_tube/widget/avatar.dart';
 
 class ChatView extends StatefulWidget {
-  const ChatView({
+  ChatView({
     Key? key,
-    required this.userId,
     required this.nickName,
     this.avatarUrl,
   }) : super(key: key);
-  final String userId;
   final String nickName;
   final String? avatarUrl;
 
@@ -25,106 +21,128 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  GlobalKey<InputBarState> _inputKey = GlobalKey();
-  ScrollController _scrollController = ScrollController();
-  List<MessageRecord> _messageList = [];
-  double _keyBoardHeight = 40;
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
+  List<MessageRecord> _messages = List.empty(growable: true);
+  int limit = 20;
 
   @override
+  void initState() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == 0) {
+        context
+            .read<MessageBloc>()
+            .add(MessageMoreHistoryLoad(limit, _messages.length));
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
-    double _bottom = MediaQuery.of(context).viewInsets.bottom;
-    if (_bottom != 0) {
-      _keyBoardHeight = _bottom + 10;
-    } else {
-      _keyBoardHeight = 40;
-    }
-    return RepositoryProvider(
-      create: (context) => GetDatabase(),
-      child: BlocProvider(
-        create: (context) => MessageBloc(widget.userId),
-        child: CupertinoPageScaffold(
-          resizeToAvoidBottomInset: false,
-          navigationBar: CupertinoNavigationBar(
-            padding: EdgeInsetsDirectional.zero,
-            middle: Column(
-              children: [
-                Text(
-                  widget.nickName,
-                ),
-                Text(
-                  "在线",
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.normal,
-                  ),
-                )
-              ],
-            ),
-            trailing: Padding(
-              padding: const EdgeInsets.only(bottom: 5, right: 5),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Avatar(avatarUrl: widget.avatarUrl),
-              ),
-            ),
-            previousPageTitle: "会话",
+    final MediaQueryData _mediaQuery = MediaQuery.of(context);
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
+      navigationBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.zero,
+        middle: Text(widget.nickName),
+        trailing: Padding(
+          padding: const EdgeInsets.only(bottom: 5, right: 5),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: Avatar(avatarUrl: widget.avatarUrl),
           ),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              _inputKey.currentState!.closeKeyBoard();
-            },
-            child: Column(
-              children: [
-                Expanded(
+        ),
+        previousPageTitle: "会话",
+      ),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Image.asset(
+            "images/background.jpg",
+            fit: BoxFit.cover,
+            height: _mediaQuery.size.height,
+          ),
+          Column(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => _focusNode.unfocus(),
                   child: BlocBuilder<MessageBloc, MessageState>(
                     builder: (context, state) {
-                      ///从数据库获取历史聊天记录
-                      if (state is MessageLoadDatabaseProgress) {
-                        ///读取数据库
-                        context
-                            .read<GetDatabase>()
-                            .myDatabase
-                            .getChatContent(state.initUserId)
-                            .then((value) {
-                          _messageList = value;
+                      if (state is MessageHistoryPushToUI) {
+                        _messages = state.messageRecord;
+                        WidgetsBinding.instance
+                            ?.addPostFrameCallback((timeStamp) {
+                          _scrollController.jumpTo(
+                              _scrollController.position.maxScrollExtent);
                         });
-
-                        ///消息读取完成通知BLOC
-                        context.read<MessageBloc>().add(MessageLoadCompleted());
-
-                        ///收到新消息
-                      } else if (state is MessageReceived) {
-                        ///消息加载
-                        _messageList.add(state.chatRecord);
-
-                        ///消息加载完成通知BLOC
-                        context.read<MessageBloc>().add(MessageLoadCompleted());
+                        context
+                            .read<MessageBloc>()
+                            .add(MessageUILoadedCompleted());
+                      } else if (state is MessageNewTextPushToUI) {
+                        _messages.insert(0, state.chatRecord);
+                        WidgetsBinding.instance
+                            ?.addPostFrameCallback((timeStamp) {
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            curve: const Cubic(.38, 0.7, 0.125, 1),
+                            duration: const Duration(milliseconds: 390),
+                          );
+                        });
+                        context
+                            .read<MessageBloc>()
+                            .add(MessageUILoadedCompleted());
+                      } else if (state is MessageMoreHistoryPushToUI) {
+                        if (state.messageRecord.isNotEmpty) {
+                          _messages.addAll(state.messageRecord);
+                        }
                       }
                       return ListView.builder(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.only(
+                          bottom: _mediaQuery.viewInsets.bottom +
+                              _mediaQuery.padding.bottom +
+                              55,
+                          top: 90,
+                        ),
+                        cacheExtent: double.maxFinite,
                         controller: _scrollController,
-                        itemCount: _messageList.length,
+                        itemCount: _messages.length,
                         itemBuilder: (context, index) {
                           return MessageBubble(
-                            message: _messageList[index].content as String,
-                            own: _messageList[index].self,
+                            messageRecord:
+                                _messages[_messages.length - 1 - index],
                           );
                         },
                       );
                     },
                   ),
                 ),
-                AnimatedPadding(
-                  duration: Duration(milliseconds: 350),
-                  curve: Curves.linearToEaseOut,
-                  padding: EdgeInsets.only(bottom: _keyBoardHeight),
-                  child: InputBar(key: _inputKey),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
+          Builder(
+            builder: (context) {
+              if (_focusNode.hasFocus) {
+                WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                  _scrollController.animateTo(
+                    _scrollController.position.maxScrollExtent,
+                    curve: const Cubic(.38, 0.7, 0.125, 1),
+                    duration: const Duration(milliseconds: 390),
+                  );
+                });
+              }
+              return InputBar(focusNode: _focusNode);
+            },
+          ),
+        ],
       ),
     );
   }

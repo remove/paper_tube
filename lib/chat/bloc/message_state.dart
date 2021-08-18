@@ -3,16 +3,22 @@ part of 'message_bloc.dart';
 @immutable
 abstract class MessageState {}
 
-class MessageLoadDatabaseProgress extends MessageState {
-  MessageLoadDatabaseProgress(this.initUserId);
+class MessageListener extends MessageState {}
 
-  final String initUserId;
+class MessageHistoryPushToUI extends MessageState {
+  final List<MessageRecord> messageRecord;
+
+  MessageHistoryPushToUI(this.messageRecord);
 }
 
-class MessageListening extends MessageState {}
-
-class MessageReceived extends MessageState {
-  MessageReceived(this.chatRecord);
-
+class MessageNewTextPushToUI extends MessageState {
   final MessageRecord chatRecord;
+
+  MessageNewTextPushToUI(this.chatRecord);
+}
+
+class MessageMoreHistoryPushToUI extends MessageState {
+  final List<MessageRecord> messageRecord;
+
+  MessageMoreHistoryPushToUI(this.messageRecord);
 }

@@ -10,3 +10,9 @@ class ConversationChangeFromIMCore extends ConversationEvent {
 
   ConversationChangeFromIMCore(this.v2timConversation);
 }
+
+class ConversationMarkMessageRead extends ConversationEvent {
+  final String userId;
+
+  ConversationMarkMessageRead(this.userId);
+}

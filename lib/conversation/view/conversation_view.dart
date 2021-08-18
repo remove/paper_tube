@@ -48,7 +48,7 @@ class _ConversationViewState extends State<ConversationView> {
                 return SliverFixedExtentList(
                   itemExtent: 70,
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                    (_, index) {
                       if (_conversationList != null) {
                         if (index < _conversationList!.length) {
                           return ContactListWidget(

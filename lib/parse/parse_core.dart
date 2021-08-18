@@ -21,24 +21,27 @@ class ParseCore {
   Future<Map<String, dynamic>> uploadAvatar(XFile sourceImage) async {
     Map<String, dynamic> result = {"success": false, "url": null};
     File? croppedImgFile = await ImageCropper.cropImage(
-        sourcePath: sourceImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        aspectRatioPresets: [CropAspectRatioPreset.square]);
+      sourcePath: sourceImage.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+    );
     if (croppedImgFile != null) {
       String path = croppedImgFile.path;
       int lastSeparator = path.lastIndexOf(Platform.pathSeparator);
       String newPath = path.substring(0, lastSeparator + 1) + "avatar.jpg";
       croppedImgFile.renameSync(newPath);
       File renamedCroppedImg = File(newPath);
-      await ParseFile(renamedCroppedImg).upload().then((value) {
-        if (value.success) {
-          String url = (value.results![0] as ParseFile).url.toString();
-          renamedCroppedImg.delete();
-          result = {"success": true, "url": url};
-        } else {
-          renamedCroppedImg.delete();
-        }
-      });
+      await ParseFile(renamedCroppedImg).upload().then(
+        (value) {
+          if (value.success) {
+            String url = (value.results![0] as ParseFile).url.toString();
+            renamedCroppedImg.delete();
+            result = {"success": true, "url": url};
+          } else {
+            renamedCroppedImg.delete();
+          }
+        },
+      );
       return result;
     } else {
       return result;

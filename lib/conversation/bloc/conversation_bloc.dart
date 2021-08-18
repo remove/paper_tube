@@ -22,7 +22,13 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
       yield ConversationListening();
     } else if (event is ConversationChangeFromIMCore) {
       yield ConversationChanged(event.v2timConversation);
+    } else if (event is ConversationMarkMessageRead) {
+      _markMessageRead(event.userId);
     }
+  }
+
+  _markMessageRead(String userId) {
+    IMCore().markMessageRead(userId);
   }
 
   _receivedNewConversationFromIMCore() {

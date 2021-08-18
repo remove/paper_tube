@@ -10,9 +10,9 @@ part of 'friend_dao.dart';
 class Friend extends DataClass implements Insertable<Friend> {
   final String? userId;
   final String? nickName;
-  final int? gender;
-  final String? logo;
-  Friend({this.userId, this.nickName, this.gender, this.logo});
+  final String? avatarUrl;
+  final String? friendRemark;
+  Friend({this.userId, this.nickName, this.avatarUrl, this.friendRemark});
   factory Friend.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -21,10 +21,10 @@ class Friend extends DataClass implements Insertable<Friend> {
           .mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
       nickName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}nick_name']),
-      gender: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}gender']),
-      logo: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}logo']),
+      avatarUrl: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}avatar_url']),
+      friendRemark: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}friend_remark']),
     );
   }
   @override
@@ -36,11 +36,11 @@ class Friend extends DataClass implements Insertable<Friend> {
     if (!nullToAbsent || nickName != null) {
       map['nick_name'] = Variable<String?>(nickName);
     }
-    if (!nullToAbsent || gender != null) {
-      map['gender'] = Variable<int?>(gender);
+    if (!nullToAbsent || avatarUrl != null) {
+      map['avatar_url'] = Variable<String?>(avatarUrl);
     }
-    if (!nullToAbsent || logo != null) {
-      map['logo'] = Variable<String?>(logo);
+    if (!nullToAbsent || friendRemark != null) {
+      map['friend_remark'] = Variable<String?>(friendRemark);
     }
     return map;
   }
@@ -52,9 +52,12 @@ class Friend extends DataClass implements Insertable<Friend> {
       nickName: nickName == null && nullToAbsent
           ? const Value.absent()
           : Value(nickName),
-      gender:
-          gender == null && nullToAbsent ? const Value.absent() : Value(gender),
-      logo: logo == null && nullToAbsent ? const Value.absent() : Value(logo),
+      avatarUrl: avatarUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(avatarUrl),
+      friendRemark: friendRemark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(friendRemark),
     );
   }
 
@@ -64,8 +67,8 @@ class Friend extends DataClass implements Insertable<Friend> {
     return Friend(
       userId: serializer.fromJson<String?>(json['userId']),
       nickName: serializer.fromJson<String?>(json['nickName']),
-      gender: serializer.fromJson<int?>(json['gender']),
-      logo: serializer.fromJson<String?>(json['logo']),
+      avatarUrl: serializer.fromJson<String?>(json['avatarUrl']),
+      friendRemark: serializer.fromJson<String?>(json['friendRemark']),
     );
   }
   @override
@@ -74,84 +77,89 @@ class Friend extends DataClass implements Insertable<Friend> {
     return <String, dynamic>{
       'userId': serializer.toJson<String?>(userId),
       'nickName': serializer.toJson<String?>(nickName),
-      'gender': serializer.toJson<int?>(gender),
-      'logo': serializer.toJson<String?>(logo),
+      'avatarUrl': serializer.toJson<String?>(avatarUrl),
+      'friendRemark': serializer.toJson<String?>(friendRemark),
     };
   }
 
   Friend copyWith(
-          {String? userId, String? nickName, int? gender, String? logo}) =>
+          {String? userId,
+          String? nickName,
+          String? avatarUrl,
+          String? friendRemark}) =>
       Friend(
         userId: userId ?? this.userId,
         nickName: nickName ?? this.nickName,
-        gender: gender ?? this.gender,
-        logo: logo ?? this.logo,
+        avatarUrl: avatarUrl ?? this.avatarUrl,
+        friendRemark: friendRemark ?? this.friendRemark,
       );
   @override
   String toString() {
     return (StringBuffer('Friend(')
           ..write('userId: $userId, ')
           ..write('nickName: $nickName, ')
-          ..write('gender: $gender, ')
-          ..write('logo: $logo')
+          ..write('avatarUrl: $avatarUrl, ')
+          ..write('friendRemark: $friendRemark')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(userId.hashCode,
-      $mrjc(nickName.hashCode, $mrjc(gender.hashCode, logo.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      userId.hashCode,
+      $mrjc(nickName.hashCode,
+          $mrjc(avatarUrl.hashCode, friendRemark.hashCode))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Friend &&
           other.userId == this.userId &&
           other.nickName == this.nickName &&
-          other.gender == this.gender &&
-          other.logo == this.logo);
+          other.avatarUrl == this.avatarUrl &&
+          other.friendRemark == this.friendRemark);
 }
 
 class FriendsCompanion extends UpdateCompanion<Friend> {
   final Value<String?> userId;
   final Value<String?> nickName;
-  final Value<int?> gender;
-  final Value<String?> logo;
+  final Value<String?> avatarUrl;
+  final Value<String?> friendRemark;
   const FriendsCompanion({
     this.userId = const Value.absent(),
     this.nickName = const Value.absent(),
-    this.gender = const Value.absent(),
-    this.logo = const Value.absent(),
+    this.avatarUrl = const Value.absent(),
+    this.friendRemark = const Value.absent(),
   });
   FriendsCompanion.insert({
     this.userId = const Value.absent(),
     this.nickName = const Value.absent(),
-    this.gender = const Value.absent(),
-    this.logo = const Value.absent(),
+    this.avatarUrl = const Value.absent(),
+    this.friendRemark = const Value.absent(),
   });
   static Insertable<Friend> custom({
     Expression<String?>? userId,
     Expression<String?>? nickName,
-    Expression<int?>? gender,
-    Expression<String?>? logo,
+    Expression<String?>? avatarUrl,
+    Expression<String?>? friendRemark,
   }) {
     return RawValuesInsertable({
       if (userId != null) 'user_id': userId,
       if (nickName != null) 'nick_name': nickName,
-      if (gender != null) 'gender': gender,
-      if (logo != null) 'logo': logo,
+      if (avatarUrl != null) 'avatar_url': avatarUrl,
+      if (friendRemark != null) 'friend_remark': friendRemark,
     });
   }
 
   FriendsCompanion copyWith(
       {Value<String?>? userId,
       Value<String?>? nickName,
-      Value<int?>? gender,
-      Value<String?>? logo}) {
+      Value<String?>? avatarUrl,
+      Value<String?>? friendRemark}) {
     return FriendsCompanion(
       userId: userId ?? this.userId,
       nickName: nickName ?? this.nickName,
-      gender: gender ?? this.gender,
-      logo: logo ?? this.logo,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      friendRemark: friendRemark ?? this.friendRemark,
     );
   }
 
@@ -164,11 +172,11 @@ class FriendsCompanion extends UpdateCompanion<Friend> {
     if (nickName.present) {
       map['nick_name'] = Variable<String?>(nickName.value);
     }
-    if (gender.present) {
-      map['gender'] = Variable<int?>(gender.value);
+    if (avatarUrl.present) {
+      map['avatar_url'] = Variable<String?>(avatarUrl.value);
     }
-    if (logo.present) {
-      map['logo'] = Variable<String?>(logo.value);
+    if (friendRemark.present) {
+      map['friend_remark'] = Variable<String?>(friendRemark.value);
     }
     return map;
   }
@@ -178,8 +186,8 @@ class FriendsCompanion extends UpdateCompanion<Friend> {
     return (StringBuffer('FriendsCompanion(')
           ..write('userId: $userId, ')
           ..write('nickName: $nickName, ')
-          ..write('gender: $gender, ')
-          ..write('logo: $logo')
+          ..write('avatarUrl: $avatarUrl, ')
+          ..write('friendRemark: $friendRemark')
           ..write(')'))
         .toString();
   }
@@ -197,16 +205,18 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
   late final GeneratedColumn<String?> nickName = GeneratedColumn<String?>(
       'nick_name', aliasedName, true,
       typeName: 'TEXT', requiredDuringInsert: false);
-  final VerificationMeta _genderMeta = const VerificationMeta('gender');
-  late final GeneratedColumn<int?> gender = GeneratedColumn<int?>(
-      'gender', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
-  final VerificationMeta _logoMeta = const VerificationMeta('logo');
-  late final GeneratedColumn<String?> logo = GeneratedColumn<String?>(
-      'logo', aliasedName, true,
+  final VerificationMeta _avatarUrlMeta = const VerificationMeta('avatarUrl');
+  late final GeneratedColumn<String?> avatarUrl = GeneratedColumn<String?>(
+      'avatar_url', aliasedName, true,
+      typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _friendRemarkMeta =
+      const VerificationMeta('friendRemark');
+  late final GeneratedColumn<String?> friendRemark = GeneratedColumn<String?>(
+      'friend_remark', aliasedName, true,
       typeName: 'TEXT', requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [userId, nickName, gender, logo];
+  List<GeneratedColumn> get $columns =>
+      [userId, nickName, avatarUrl, friendRemark];
   @override
   String get aliasedName => _alias ?? 'friends';
   @override
@@ -224,13 +234,15 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
       context.handle(_nickNameMeta,
           nickName.isAcceptableOrUnknown(data['nick_name']!, _nickNameMeta));
     }
-    if (data.containsKey('gender')) {
-      context.handle(_genderMeta,
-          gender.isAcceptableOrUnknown(data['gender']!, _genderMeta));
+    if (data.containsKey('avatar_url')) {
+      context.handle(_avatarUrlMeta,
+          avatarUrl.isAcceptableOrUnknown(data['avatar_url']!, _avatarUrlMeta));
     }
-    if (data.containsKey('logo')) {
+    if (data.containsKey('friend_remark')) {
       context.handle(
-          _logoMeta, logo.isAcceptableOrUnknown(data['logo']!, _logoMeta));
+          _friendRemarkMeta,
+          friendRemark.isAcceptableOrUnknown(
+              data['friend_remark']!, _friendRemarkMeta));
     }
     return context;
   }
@@ -250,23 +262,34 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
 }
 
 class MessageRecord extends DataClass implements Insertable<MessageRecord> {
-  final String? userId;
+  final int? index;
+  final int type;
+  final String userId;
   final bool self;
-  final String? content;
+  final String content;
   final DateTime time;
   MessageRecord(
-      {this.userId, required this.self, this.content, required this.time});
+      {this.index,
+      required this.type,
+      required this.userId,
+      required this.self,
+      required this.content,
+      required this.time});
   factory MessageRecord.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return MessageRecord(
+      index: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}index']),
+      type: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}type'])!,
       userId: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
+          .mapFromDatabaseResponse(data['${effectivePrefix}user_id'])!,
       self: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}self'])!,
       content: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}content']),
+          .mapFromDatabaseResponse(data['${effectivePrefix}content'])!,
       time: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}time'])!,
     );
@@ -274,25 +297,25 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (!nullToAbsent || userId != null) {
-      map['user_id'] = Variable<String?>(userId);
+    if (!nullToAbsent || index != null) {
+      map['index'] = Variable<int?>(index);
     }
+    map['type'] = Variable<int>(type);
+    map['user_id'] = Variable<String>(userId);
     map['self'] = Variable<bool>(self);
-    if (!nullToAbsent || content != null) {
-      map['content'] = Variable<String?>(content);
-    }
+    map['content'] = Variable<String>(content);
     map['time'] = Variable<DateTime>(time);
     return map;
   }
 
   MessageRecordsCompanion toCompanion(bool nullToAbsent) {
     return MessageRecordsCompanion(
-      userId:
-          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      index:
+          index == null && nullToAbsent ? const Value.absent() : Value(index),
+      type: Value(type),
+      userId: Value(userId),
       self: Value(self),
-      content: content == null && nullToAbsent
-          ? const Value.absent()
-          : Value(content),
+      content: Value(content),
       time: Value(time),
     );
   }
@@ -301,9 +324,11 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
       {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return MessageRecord(
-      userId: serializer.fromJson<String?>(json['userId']),
+      index: serializer.fromJson<int?>(json['index']),
+      type: serializer.fromJson<int>(json['type']),
+      userId: serializer.fromJson<String>(json['userId']),
       self: serializer.fromJson<bool>(json['self']),
-      content: serializer.fromJson<String?>(json['content']),
+      content: serializer.fromJson<String>(json['content']),
       time: serializer.fromJson<DateTime>(json['time']),
     );
   }
@@ -311,16 +336,25 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'userId': serializer.toJson<String?>(userId),
+      'index': serializer.toJson<int?>(index),
+      'type': serializer.toJson<int>(type),
+      'userId': serializer.toJson<String>(userId),
       'self': serializer.toJson<bool>(self),
-      'content': serializer.toJson<String?>(content),
+      'content': serializer.toJson<String>(content),
       'time': serializer.toJson<DateTime>(time),
     };
   }
 
   MessageRecord copyWith(
-          {String? userId, bool? self, String? content, DateTime? time}) =>
+          {int? index,
+          int? type,
+          String? userId,
+          bool? self,
+          String? content,
+          DateTime? time}) =>
       MessageRecord(
+        index: index ?? this.index,
+        type: type ?? this.type,
         userId: userId ?? this.userId,
         self: self ?? this.self,
         content: content ?? this.content,
@@ -329,6 +363,8 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
   @override
   String toString() {
     return (StringBuffer('MessageRecord(')
+          ..write('index: $index, ')
+          ..write('type: $type, ')
           ..write('userId: $userId, ')
           ..write('self: $self, ')
           ..write('content: $content, ')
@@ -338,12 +374,18 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(userId.hashCode,
-      $mrjc(self.hashCode, $mrjc(content.hashCode, time.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      index.hashCode,
+      $mrjc(
+          type.hashCode,
+          $mrjc(userId.hashCode,
+              $mrjc(self.hashCode, $mrjc(content.hashCode, time.hashCode))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MessageRecord &&
+          other.index == this.index &&
+          other.type == this.type &&
           other.userId == this.userId &&
           other.self == this.self &&
           other.content == this.content &&
@@ -351,30 +393,43 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
 }
 
 class MessageRecordsCompanion extends UpdateCompanion<MessageRecord> {
-  final Value<String?> userId;
+  final Value<int?> index;
+  final Value<int> type;
+  final Value<String> userId;
   final Value<bool> self;
-  final Value<String?> content;
+  final Value<String> content;
   final Value<DateTime> time;
   const MessageRecordsCompanion({
+    this.index = const Value.absent(),
+    this.type = const Value.absent(),
     this.userId = const Value.absent(),
     this.self = const Value.absent(),
     this.content = const Value.absent(),
     this.time = const Value.absent(),
   });
   MessageRecordsCompanion.insert({
-    this.userId = const Value.absent(),
+    this.index = const Value.absent(),
+    required int type,
+    required String userId,
     required bool self,
-    this.content = const Value.absent(),
+    required String content,
     required DateTime time,
-  })  : self = Value(self),
+  })  : type = Value(type),
+        userId = Value(userId),
+        self = Value(self),
+        content = Value(content),
         time = Value(time);
   static Insertable<MessageRecord> custom({
-    Expression<String?>? userId,
+    Expression<int?>? index,
+    Expression<int>? type,
+    Expression<String>? userId,
     Expression<bool>? self,
-    Expression<String?>? content,
+    Expression<String>? content,
     Expression<DateTime>? time,
   }) {
     return RawValuesInsertable({
+      if (index != null) 'index': index,
+      if (type != null) 'type': type,
       if (userId != null) 'user_id': userId,
       if (self != null) 'self': self,
       if (content != null) 'content': content,
@@ -383,11 +438,15 @@ class MessageRecordsCompanion extends UpdateCompanion<MessageRecord> {
   }
 
   MessageRecordsCompanion copyWith(
-      {Value<String?>? userId,
+      {Value<int?>? index,
+      Value<int>? type,
+      Value<String>? userId,
       Value<bool>? self,
-      Value<String?>? content,
+      Value<String>? content,
       Value<DateTime>? time}) {
     return MessageRecordsCompanion(
+      index: index ?? this.index,
+      type: type ?? this.type,
       userId: userId ?? this.userId,
       self: self ?? this.self,
       content: content ?? this.content,
@@ -398,14 +457,20 @@ class MessageRecordsCompanion extends UpdateCompanion<MessageRecord> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (index.present) {
+      map['index'] = Variable<int?>(index.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<int>(type.value);
+    }
     if (userId.present) {
-      map['user_id'] = Variable<String?>(userId.value);
+      map['user_id'] = Variable<String>(userId.value);
     }
     if (self.present) {
       map['self'] = Variable<bool>(self.value);
     }
     if (content.present) {
-      map['content'] = Variable<String?>(content.value);
+      map['content'] = Variable<String>(content.value);
     }
     if (time.present) {
       map['time'] = Variable<DateTime>(time.value);
@@ -416,6 +481,8 @@ class MessageRecordsCompanion extends UpdateCompanion<MessageRecord> {
   @override
   String toString() {
     return (StringBuffer('MessageRecordsCompanion(')
+          ..write('index: $index, ')
+          ..write('type: $type, ')
           ..write('userId: $userId, ')
           ..write('self: $self, ')
           ..write('content: $content, ')
@@ -430,10 +497,20 @@ class $MessageRecordsTable extends MessageRecords
   final GeneratedDatabase _db;
   final String? _alias;
   $MessageRecordsTable(this._db, [this._alias]);
+  final VerificationMeta _indexMeta = const VerificationMeta('index');
+  late final GeneratedColumn<int?> index = GeneratedColumn<int?>(
+      'index', aliasedName, true,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _typeMeta = const VerificationMeta('type');
+  late final GeneratedColumn<int?> type = GeneratedColumn<int?>(
+      'type', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _userIdMeta = const VerificationMeta('userId');
   late final GeneratedColumn<String?> userId = GeneratedColumn<String?>(
-      'user_id', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      'user_id', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _selfMeta = const VerificationMeta('self');
   late final GeneratedColumn<bool?> self = GeneratedColumn<bool?>(
       'self', aliasedName, false,
@@ -442,14 +519,15 @@ class $MessageRecordsTable extends MessageRecords
       defaultConstraints: 'CHECK (self IN (0, 1))');
   final VerificationMeta _contentMeta = const VerificationMeta('content');
   late final GeneratedColumn<String?> content = GeneratedColumn<String?>(
-      'content', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      'content', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _timeMeta = const VerificationMeta('time');
   late final GeneratedColumn<DateTime?> time = GeneratedColumn<DateTime?>(
       'time', aliasedName, false,
       typeName: 'INTEGER', requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [userId, self, content, time];
+  List<GeneratedColumn> get $columns =>
+      [index, type, userId, self, content, time];
   @override
   String get aliasedName => _alias ?? 'message_records';
   @override
@@ -459,9 +537,21 @@ class $MessageRecordsTable extends MessageRecords
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('index')) {
+      context.handle(
+          _indexMeta, index.isAcceptableOrUnknown(data['index']!, _indexMeta));
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
     if (data.containsKey('user_id')) {
       context.handle(_userIdMeta,
           userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
     }
     if (data.containsKey('self')) {
       context.handle(
@@ -472,6 +562,8 @@ class $MessageRecordsTable extends MessageRecords
     if (data.containsKey('content')) {
       context.handle(_contentMeta,
           content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
     }
     if (data.containsKey('time')) {
       context.handle(
@@ -483,7 +575,7 @@ class $MessageRecordsTable extends MessageRecords
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {index};
   @override
   MessageRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
     return MessageRecord.fromData(data, _db,
@@ -496,12 +588,190 @@ class $MessageRecordsTable extends MessageRecords
   }
 }
 
+class MessageResource extends DataClass implements Insertable<MessageResource> {
+  final int index;
+  final String source;
+  MessageResource({required this.index, required this.source});
+  factory MessageResource.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return MessageResource(
+      index: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}index'])!,
+      source: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}source'])!,
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['index'] = Variable<int>(index);
+    map['source'] = Variable<String>(source);
+    return map;
+  }
+
+  MessageResourcesCompanion toCompanion(bool nullToAbsent) {
+    return MessageResourcesCompanion(
+      index: Value(index),
+      source: Value(source),
+    );
+  }
+
+  factory MessageResource.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return MessageResource(
+      index: serializer.fromJson<int>(json['index']),
+      source: serializer.fromJson<String>(json['source']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'index': serializer.toJson<int>(index),
+      'source': serializer.toJson<String>(source),
+    };
+  }
+
+  MessageResource copyWith({int? index, String? source}) => MessageResource(
+        index: index ?? this.index,
+        source: source ?? this.source,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('MessageResource(')
+          ..write('index: $index, ')
+          ..write('source: $source')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(index.hashCode, source.hashCode));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MessageResource &&
+          other.index == this.index &&
+          other.source == this.source);
+}
+
+class MessageResourcesCompanion extends UpdateCompanion<MessageResource> {
+  final Value<int> index;
+  final Value<String> source;
+  const MessageResourcesCompanion({
+    this.index = const Value.absent(),
+    this.source = const Value.absent(),
+  });
+  MessageResourcesCompanion.insert({
+    required int index,
+    required String source,
+  })  : index = Value(index),
+        source = Value(source);
+  static Insertable<MessageResource> custom({
+    Expression<int>? index,
+    Expression<String>? source,
+  }) {
+    return RawValuesInsertable({
+      if (index != null) 'index': index,
+      if (source != null) 'source': source,
+    });
+  }
+
+  MessageResourcesCompanion copyWith(
+      {Value<int>? index, Value<String>? source}) {
+    return MessageResourcesCompanion(
+      index: index ?? this.index,
+      source: source ?? this.source,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (index.present) {
+      map['index'] = Variable<int>(index.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MessageResourcesCompanion(')
+          ..write('index: $index, ')
+          ..write('source: $source')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MessageResourcesTable extends MessageResources
+    with TableInfo<$MessageResourcesTable, MessageResource> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $MessageResourcesTable(this._db, [this._alias]);
+  final VerificationMeta _indexMeta = const VerificationMeta('index');
+  late final GeneratedColumn<int?> index = GeneratedColumn<int?>(
+      'index', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
+  final VerificationMeta _sourceMeta = const VerificationMeta('source');
+  late final GeneratedColumn<String?> source = GeneratedColumn<String?>(
+      'source', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [index, source];
+  @override
+  String get aliasedName => _alias ?? 'message_resources';
+  @override
+  String get actualTableName => 'message_resources';
+  @override
+  VerificationContext validateIntegrity(Insertable<MessageResource> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('index')) {
+      context.handle(
+          _indexMeta, index.isAcceptableOrUnknown(data['index']!, _indexMeta));
+    } else if (isInserting) {
+      context.missing(_indexMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(_sourceMeta,
+          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  @override
+  MessageResource map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return MessageResource.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  $MessageResourcesTable createAlias(String alias) {
+    return $MessageResourcesTable(_db, alias);
+  }
+}
+
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $FriendsTable friends = $FriendsTable(this);
   late final $MessageRecordsTable messageRecords = $MessageRecordsTable(this);
+  late final $MessageResourcesTable messageResources =
+      $MessageResourcesTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [friends, messageRecords];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [friends, messageRecords, messageResources];
 }

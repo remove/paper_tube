@@ -1,14 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:paper_tube/chat/bloc/message_bloc.dart';
+import 'package:paper_tube/chat/view/chat_view.dart';
+import 'package:paper_tube/friends/bloc/friends_bloc.dart';
+import 'package:paper_tube/friends/view/friends_view.dart';
+import 'package:paper_tube/route/aero_page_route.dart';
 import 'package:paper_tube/widget/avatar.dart';
 
-class ContactDetailView extends StatelessWidget {
-  const ContactDetailView({
+class FriendDetailView extends StatelessWidget {
+  const FriendDetailView({
     Key? key,
-    required this.avatarUrl,
+    required this.friend,
   }) : super(key: key);
 
-  final String? avatarUrl;
+  final FriendData friend;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +30,9 @@ class ContactDetailView extends StatelessWidget {
           trailing: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              showCupertinoModalPopup<void>(
+              showCupertinoModalPopup<bool?>(
                 context: context,
-                builder: (BuildContext context) => CupertinoActionSheet(
+                builder: (BuildContext _) => CupertinoActionSheet(
                   title: const Text('更多'),
                   actions: <CupertinoActionSheetAction>[
                     CupertinoActionSheetAction(
@@ -35,19 +41,24 @@ class ContactDetailView extends StatelessWidget {
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        context
+                            .read<FriendsBloc>()
+                            .add(FriendsDeleted(friend.userID));
+                        Navigator.pop(_, true);
                       },
                     )
                   ],
                   cancelButton: CupertinoActionSheetAction(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(_),
                     child: const Text(
                       '取消',
                       style: TextStyle(color: Colors.cyan),
                     ),
                   ),
                 ),
-              );
+              ).then((value) {
+                if (value == true) Navigator.pop(context);
+              });
             },
             child: const SizedBox(
               height: 40,
@@ -67,7 +78,7 @@ class ContactDetailView extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              child: Avatar(avatarUrl: avatarUrl),
+              child: Avatar(avatarUrl: friend.avatarUrl),
             ),
             Container(
               margin: const EdgeInsets.fromLTRB(10, 20, 10, 10),
@@ -81,11 +92,11 @@ class ContactDetailView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text("备注", style: TextStyle(fontSize: 15)),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Row(
                     children: [
-                      const Text(
-                        "我自己",
+                      Text(
+                        friend.friendRemark ?? friend.userID,
                         style: TextStyle(
                           color: Colors.cyan,
                         ),
@@ -110,28 +121,41 @@ class ContactDetailView extends StatelessWidget {
                 children: [
                   const Text("昵称", style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 2),
-                  const Text("Aero"),
+                  Text(friend.nickName ?? "用户未设置昵称"),
                   const Divider(),
                   const Text("用户名", style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 2),
-                  const Text("removeneo"),
+                  Text(friend.userID),
                 ],
               ),
             ),
             const Spacer(),
             SafeArea(
-              child: Container(
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.cyan),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  AeroPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (_) => MessageBloc(friend.userID),
+                      child: ChatView(
+                        nickName: friend.nickName ?? friend.userID,
+                      ),
+                    ),
+                  ),
                 ),
-                child: const Text(
-                  "发消息",
-                  style: TextStyle(color: Colors.cyan),
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.cyan),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                    "发消息",
+                    style: TextStyle(color: Colors.cyan),
+                  ),
                 ),
               ),
             ),

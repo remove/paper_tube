@@ -12,19 +12,29 @@ class Friends extends Table {
 
   TextColumn get nickName => text().nullable()();
 
-  IntColumn get gender => integer().nullable()();
+  TextColumn get avatarUrl => text().nullable()();
 
-  TextColumn get logo => text().nullable()();
+  TextColumn get friendRemark => text().nullable()();
 }
 
 class MessageRecords extends Table {
-  TextColumn get userId => text().nullable()();
+  IntColumn get index => integer().autoIncrement().nullable()();
+
+  IntColumn get type => integer()();
+
+  TextColumn get userId => text()();
 
   BoolColumn get self => boolean()();
 
-  TextColumn get content => text().nullable()();
+  TextColumn get content => text()();
 
   DateTimeColumn get time => dateTime()();
+}
+
+class MessageResources extends Table {
+  IntColumn get index => integer()();
+
+  TextColumn get source => text()();
 }
 
 LazyDatabase _openConnection() {
@@ -35,7 +45,7 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [Friends, MessageRecords])
+@UseMoor(tables: [Friends, MessageRecords, MessageResources])
 class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
@@ -53,15 +63,26 @@ class MyDatabase extends _$MyDatabase {
     return into(friends).insert(friendsCompanion);
   }
 
+  Future<int> insertMessageResource(MessageResource msgRsc) {
+    return into(messageResources).insert(msgRsc);
+  }
+
+  Future<List<MessageResource>> getMessageResource(int index) {
+    var one = select(messageResources);
+    var two = one..where((tbl) => tbl.index.equals(index));
+    return two.get();
+  }
+
   Future<List<Friend>> getFriendInfo(String userId) {
     return (select(friends)..where((tbl) => tbl.userId.equals(userId))).get();
   }
 
-  Future<List<MessageRecord>> getChatContent(String userId) {
+  Future<List<MessageRecord>> getHistoryRecords(
+      String userId, int limit, int offset) {
     return (select(messageRecords)
-          ..where(
-            (tbl) => tbl.userId.equals(userId),
-          ))
+          ..where((tbl) => tbl.userId.equals(userId))
+          ..orderBy([(t) => OrderingTerm.desc(t.index)])
+          ..limit(limit, offset: offset))
         .get();
   }
 
