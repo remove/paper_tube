@@ -110,13 +110,6 @@ class IMCore {
     );
   }
 
-  Future<List<V2TimMessage>?> getMessageHistory(String userId) async {
-    List<V2TimMessage>? messageList = (await _manager.v2TIMMessageManager
-            .getC2CHistoryMessageList(userID: userId, count: 20))
-        .data;
-    return messageList;
-  }
-
   ///获取新好友申请列表
   Future<List<Friend>?> getNewFriendsApplicationList() async {
     var result =
@@ -177,6 +170,12 @@ class IMCore {
       receiver: receiver,
       groupID: "",
     );
+  }
+
+  Future<V2TimMessage> sendImageMessage(String path, String userId) async {
+    var result = await _manager.v2TIMMessageManager
+        .sendImageMessage(imagePath: path, receiver: userId, groupID: "");
+    return result.data as V2TimMessage;
   }
 
   markMessageRead(String userId) async {

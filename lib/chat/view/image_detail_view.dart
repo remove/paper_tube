@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,9 +11,11 @@ class ImageDetailView extends StatelessWidget {
     Key? key,
     required this.index,
     required this.url,
+    required this.self,
   }) : super(key: key);
   final String url;
   final int index;
+  final bool self;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +36,7 @@ class ImageDetailView extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return PhotoView(
-                  imageProvider:
-                      CachedNetworkImageProvider(snapshot.data as String),
+                  imageProvider: _getPhoto(snapshot.data as String),
                   maxScale: PhotoViewComputedScale.covered,
                   minScale: PhotoViewComputedScale.contained,
                 );
@@ -46,6 +48,14 @@ class ImageDetailView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  ImageProvider _getPhoto(String data) {
+    if (self) {
+      return FileImage(File(data));
+    } else {
+      return CachedNetworkImageProvider(data);
+    }
   }
 
   Future<String> _getResource() async {

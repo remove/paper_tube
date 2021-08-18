@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:paper_tube/im/im_core.dart';
 import 'package:paper_tube/models/friend_dao.dart';
 import 'package:paper_tube/models/get_database.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
 
 part 'message_event.dart';
 
@@ -28,6 +30,10 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   ) async* {
     if (event is MessageHistoryLoadedFromDatabase) {
       yield MessageHistoryPushToUI(_messageList);
+    } else if (event is MessageMoreHistoryLoad) {
+      var historyList = await _database.myDatabase
+          .getHistoryRecords(userId, event.limit, event.offset);
+      yield MessageMoreHistoryPushToUI(historyList);
     } else if (event is MessageUILoadedCompleted) {
       yield MessageListener();
     } else if (event is MessageReceivedFromIMCore) {
@@ -43,10 +49,9 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           time: DateTime.now(),
         ),
       );
-    } else if (event is MessageMoreHistoryLoad) {
-      var historyList = await _database.myDatabase
-          .getHistoryRecords(userId, event.limit, event.offset);
-      yield MessageMoreHistoryPushToUI(historyList);
+    } else if (event is MessageReceivedImageFromUI) {
+      MessageRecord messageRecord = await _receivedNewImageFromUI(event.file);
+      yield MessageNewTextPushToUI(messageRecord);
     }
   }
 
@@ -67,7 +72,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
           } else if (event.elemType == 3) {
             if (event.imageElem?.imageList?[1]?.url != null) {
               content = event.imageElem!.imageList![1]!.url as String;
-              print(content);
             }
           }
           add(
@@ -87,11 +91,44 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   _receivedNewTextFromUI(String text) {
-    _newMessageToDatabase(text);
+    _textMessageToDatabase(text);
     _imCore.sendMessage(text, userId);
   }
 
-  _newMessageToDatabase(String text) {
+  Future<MessageRecord> _receivedNewImageFromUI(XFile file) async {
+    V2TimMessage result = await _imCore.sendImageMessage(file.path, userId);
+    return await _imageMessageTODatabase(file.path, result);
+  }
+
+  Future<MessageRecord> _imageMessageTODatabase(
+      String localPath, V2TimMessage v2timMessage) async {
+    int index = await _database.myDatabase.insertChatContent(
+      MessageRecord(
+        type: 3,
+        userId: userId,
+        self: true,
+        content: v2timMessage.imageElem!.imageList![1]!.url as String,
+        time: DateTime.now(),
+      ),
+    );
+    await _database.myDatabase.insertMessageResource(
+      MessageResource(
+        index: index,
+        source: localPath,
+      ),
+    );
+
+    return MessageRecord(
+      index: index,
+      type: 3,
+      userId: userId,
+      self: true,
+      content: v2timMessage.imageElem!.imageList![1]!.url as String,
+      time: DateTime.now(),
+    );
+  }
+
+  _textMessageToDatabase(String text) {
     _database.myDatabase.insertChatContent(
       MessageRecord(
         userId: userId,

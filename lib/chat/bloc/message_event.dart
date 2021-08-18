@@ -19,6 +19,12 @@ class MessageReceivedTextFromUI extends MessageEvent {
   MessageReceivedTextFromUI(this.text);
 }
 
+class MessageReceivedImageFromUI extends MessageEvent {
+  final XFile file;
+
+  MessageReceivedImageFromUI(this.file);
+}
+
 class MessageMoreHistoryLoad extends MessageEvent {
   final int limit;
   final int offset;

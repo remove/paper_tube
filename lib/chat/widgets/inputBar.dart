@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:paper_tube/chat/bloc/message_bloc.dart';
 
 class InputBar extends StatelessWidget {
@@ -35,8 +36,49 @@ class InputBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SizedBox(
-                width: 45,
+              GestureDetector(
+                onTap: () => showCupertinoModalPopup(
+                  context: context,
+                  builder: (_) => CupertinoActionSheet(
+                    title: Text("来源"),
+                    actions: [
+                      CupertinoActionSheetAction(
+                        onPressed: () {
+                          ImagePicker()
+                              .pickImage(source: ImageSource.gallery)
+                              .then(
+                            (value) {
+                              Navigator.pop(context);
+                              if (value != null) {
+                                context.read<MessageBloc>().add(
+                                      MessageReceivedImageFromUI(value),
+                                    );
+                              }
+                            },
+                          );
+                        },
+                        child: Text("图库"),
+                      ),
+                      CupertinoActionSheetAction(
+                        onPressed: () {
+                          ImagePicker()
+                              .pickImage(source: ImageSource.camera)
+                              .then(
+                            (value) {
+                              Navigator.pop(context);
+                              if (value != null) {
+                                context
+                                    .read<MessageBloc>()
+                                    .add(MessageReceivedImageFromUI(value));
+                              }
+                            },
+                          );
+                        },
+                        child: Text("相机"),
+                      ),
+                    ],
+                  ),
+                ),
                 child: SizedBox(
                   height: 43,
                   width: 45,

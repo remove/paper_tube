@@ -51,6 +51,7 @@ class MessageBubble extends StatelessWidget {
                 ImageDetailView(
                   url: messageRecord.content,
                   index: messageRecord.index as int,
+                  self: messageRecord.self,
                 ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
