@@ -14,7 +14,6 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
     _receivedNewConversationFromIMCore();
   }
 
-  @override
   Stream<ConversationState> mapEventToState(
     ConversationEvent event,
   ) async* {

@@ -9,8 +9,10 @@ import 'package:tencent_im_sdk_plugin/enum/V2TimAdvancedMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimConversationListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimFriendshipListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
-import 'package:tencent_im_sdk_plugin/enum/friend_type.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
+import 'package:tencent_im_sdk_plugin/enum/friend_application_type_enum.dart';
+import 'package:tencent_im_sdk_plugin/enum/friend_response_type_enum.dart';
+import 'package:tencent_im_sdk_plugin/enum/friend_type_enum.dart';
+import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_info.dart';
@@ -39,7 +41,7 @@ class IMCore {
   init() async {
     await _manager.initSDK(
       sdkAppID: 1400413627,
-      loglevel: LogLevel.V2TIM_LOG_NONE,
+      loglevel: LogLevelEnum.V2TIM_LOG_INFO,
       listener: V2TimSDKListener(),
     );
     messageListener();
@@ -127,18 +129,24 @@ class IMCore {
         ),
       );
     }
+    return null;
   }
 
   ///拒绝好友申请
   rejectNewFriendApplication(String userId) {
-    _manager.v2TIMFriendshipManager
-        .refuseFriendApplication(type: 1, userID: userId);
+    _manager.v2TIMFriendshipManager.refuseFriendApplication(
+      type: FriendApplicationTypeEnum.V2TIM_FRIEND_APPLICATION_BOTH,
+      userID: userId,
+    );
   }
 
   ///通过好友申请
   allowNewFriendApplication(String userId) {
-    _manager.v2TIMFriendshipManager
-        .acceptFriendApplication(responseType: 1, type: 1, userID: userId);
+    _manager.v2TIMFriendshipManager.acceptFriendApplication(
+      responseType: FriendResponseTypeEnum.V2TIM_FRIEND_ACCEPT_AGREE_AND_ADD,
+      type: FriendApplicationTypeEnum.V2TIM_FRIEND_APPLICATION_BOTH,
+      userID: userId,
+    );
   }
 
   ///获取用户资料
@@ -151,7 +159,7 @@ class IMCore {
     return await _manager.v2TIMFriendshipManager.addFriend(
       addWording: addNote,
       userID: userID,
-      addType: FriendType.V2TIM_FRIEND_TYPE_BOTH,
+      addType: FriendTypeEnum.V2TIM_FRIEND_TYPE_BOTH,
     );
   }
 
@@ -159,7 +167,7 @@ class IMCore {
   delFriend(String userId) {
     _manager.v2TIMFriendshipManager.deleteFromFriendList(
       userIDList: [userId],
-      deleteType: FriendType.V2TIM_FRIEND_TYPE_BOTH,
+      deleteType: FriendTypeEnum.V2TIM_FRIEND_TYPE_BOTH,
     );
   }
 
@@ -185,11 +193,12 @@ class IMCore {
   ///好友关系检查
   Future<FriendCheckType?> friendCheck(String userId) async {
     var result = await _manager.v2TIMFriendshipManager.checkFriend(
-        userIDList: [userId], checkType: FriendType.V2TIM_FRIEND_TYPE_BOTH);
+        userIDList: [userId], checkType: FriendTypeEnum.V2TIM_FRIEND_TYPE_BOTH);
     int? resultType = result.data?[0].resultType;
     if (resultType != null) {
       return FriendCheckType.values[resultType];
     }
+    return null;
   }
 
   ///获取好友列表

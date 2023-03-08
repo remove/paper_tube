@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paper_tube/chat/view/image_detail_view.dart';
 import 'package:paper_tube/models/friend_dao.dart';

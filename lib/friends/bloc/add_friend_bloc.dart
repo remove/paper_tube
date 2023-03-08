@@ -15,7 +15,6 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
 
   final IMCore _imCore = IMCore();
 
-  @override
   Stream<AddFriendState> mapEventToState(
     AddFriendEvent event,
   ) async* {

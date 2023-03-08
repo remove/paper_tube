@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paper_tube/chat/bloc/message_bloc.dart';
 import 'package:paper_tube/chat/widgets/inputBar.dart';
@@ -79,7 +78,7 @@ class _ChatViewState extends State<ChatView> {
                       if (state is MessageHistoryPushToUI) {
                         _messages = state.messageRecord;
                         WidgetsBinding.instance
-                            ?.addPostFrameCallback((timeStamp) {
+                            .addPostFrameCallback((timeStamp) {
                           _scrollController.jumpTo(
                               _scrollController.position.maxScrollExtent);
                         });
@@ -89,7 +88,7 @@ class _ChatViewState extends State<ChatView> {
                       } else if (state is MessageNewTextPushToUI) {
                         _messages.insert(0, state.chatRecord);
                         WidgetsBinding.instance
-                            ?.addPostFrameCallback((timeStamp) {
+                            .addPostFrameCallback((timeStamp) {
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
                             curve: const Cubic(.38, 0.7, 0.125, 1),
@@ -131,7 +130,7 @@ class _ChatViewState extends State<ChatView> {
           Builder(
             builder: (context) {
               if (_focusNode.hasFocus) {
-                WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   _scrollController.animateTo(
                     _scrollController.position.maxScrollExtent,
                     curve: const Cubic(.38, 0.7, 0.125, 1),

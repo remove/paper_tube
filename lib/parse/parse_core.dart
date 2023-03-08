@@ -20,7 +20,7 @@ class ParseCore {
 
   Future<Map<String, dynamic>> uploadAvatar(XFile sourceImage) async {
     Map<String, dynamic> result = {"success": false, "url": null};
-    File? croppedImgFile = await ImageCropper.cropImage(
+    File? croppedImgFile = await ImageCropper().cropImage(
       sourcePath: sourceImage.path,
       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
       aspectRatioPresets: [CropAspectRatioPreset.square],

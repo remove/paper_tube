@@ -6,7 +6,7 @@ part of 'friend_dao.dart';
 // MoorGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+// ignore_for_file: type=lint
 class Friend extends DataClass implements Insertable<Friend> {
   final String? userId;
   final String? nickName;
@@ -105,10 +105,7 @@ class Friend extends DataClass implements Insertable<Friend> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      userId.hashCode,
-      $mrjc(nickName.hashCode,
-          $mrjc(avatarUrl.hashCode, friendRemark.hashCode))));
+  int get hashCode => Object.hash(userId, nickName, avatarUrl, friendRemark);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -194,26 +191,31 @@ class FriendsCompanion extends UpdateCompanion<Friend> {
 }
 
 class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $FriendsTable(this._db, [this._alias]);
+  $FriendsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
   late final GeneratedColumn<String?> userId = GeneratedColumn<String?>(
       'user_id', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _nickNameMeta = const VerificationMeta('nickName');
+  @override
   late final GeneratedColumn<String?> nickName = GeneratedColumn<String?>(
       'nick_name', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _avatarUrlMeta = const VerificationMeta('avatarUrl');
+  @override
   late final GeneratedColumn<String?> avatarUrl = GeneratedColumn<String?>(
       'avatar_url', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _friendRemarkMeta =
       const VerificationMeta('friendRemark');
+  @override
   late final GeneratedColumn<String?> friendRemark = GeneratedColumn<String?>(
       'friend_remark', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
       [userId, nickName, avatarUrl, friendRemark];
@@ -251,13 +253,13 @@ class $FriendsTable extends Friends with TableInfo<$FriendsTable, Friend> {
   Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   Friend map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return Friend.fromData(data, _db,
+    return Friend.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $FriendsTable createAlias(String alias) {
-    return $FriendsTable(_db, alias);
+    return $FriendsTable(attachedDatabase, alias);
   }
 }
 
@@ -374,12 +376,7 @@ class MessageRecord extends DataClass implements Insertable<MessageRecord> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      index.hashCode,
-      $mrjc(
-          type.hashCode,
-          $mrjc(userId.hashCode,
-              $mrjc(self.hashCode, $mrjc(content.hashCode, time.hashCode))))));
+  int get hashCode => Object.hash(index, type, userId, self, content, time);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -494,37 +491,44 @@ class MessageRecordsCompanion extends UpdateCompanion<MessageRecord> {
 
 class $MessageRecordsTable extends MessageRecords
     with TableInfo<$MessageRecordsTable, MessageRecord> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MessageRecordsTable(this._db, [this._alias]);
+  $MessageRecordsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _indexMeta = const VerificationMeta('index');
+  @override
   late final GeneratedColumn<int?> index = GeneratedColumn<int?>(
       'index', aliasedName, true,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
   late final GeneratedColumn<int?> type = GeneratedColumn<int?>(
       'type', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
   late final GeneratedColumn<String?> userId = GeneratedColumn<String?>(
       'user_id', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _selfMeta = const VerificationMeta('self');
+  @override
   late final GeneratedColumn<bool?> self = GeneratedColumn<bool?>(
       'self', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const BoolType(),
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK (self IN (0, 1))');
   final VerificationMeta _contentMeta = const VerificationMeta('content');
+  @override
   late final GeneratedColumn<String?> content = GeneratedColumn<String?>(
       'content', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
   late final GeneratedColumn<DateTime?> time = GeneratedColumn<DateTime?>(
       'time', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [index, type, userId, self, content, time];
@@ -578,13 +582,13 @@ class $MessageRecordsTable extends MessageRecords
   Set<GeneratedColumn> get $primaryKey => {index};
   @override
   MessageRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return MessageRecord.fromData(data, _db,
+    return MessageRecord.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $MessageRecordsTable createAlias(String alias) {
-    return $MessageRecordsTable(_db, alias);
+    return $MessageRecordsTable(attachedDatabase, alias);
   }
 }
 
@@ -649,7 +653,7 @@ class MessageResource extends DataClass implements Insertable<MessageResource> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(index.hashCode, source.hashCode));
+  int get hashCode => Object.hash(index, source);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -712,17 +716,20 @@ class MessageResourcesCompanion extends UpdateCompanion<MessageResource> {
 
 class $MessageResourcesTable extends MessageResources
     with TableInfo<$MessageResourcesTable, MessageResource> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MessageResourcesTable(this._db, [this._alias]);
+  $MessageResourcesTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _indexMeta = const VerificationMeta('index');
+  @override
   late final GeneratedColumn<int?> index = GeneratedColumn<int?>(
       'index', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
   late final GeneratedColumn<String?> source = GeneratedColumn<String?>(
       'source', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [index, source];
   @override
@@ -753,13 +760,13 @@ class $MessageResourcesTable extends MessageResources
   Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   MessageResource map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return MessageResource.fromData(data, _db,
+    return MessageResource.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $MessageResourcesTable createAlias(String alias) {
-    return $MessageResourcesTable(_db, alias);
+    return $MessageResourcesTable(attachedDatabase, alias);
   }
 }
 

@@ -56,9 +56,8 @@ class _ConversationViewState extends State<ConversationView> {
                                 _conversationList![index] as V2TimConversation,
                           );
                         }
-                      } else {
-                        return null;
                       }
+                      return null;
                     },
                   ),
                 );

@@ -24,7 +24,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   final GetDatabase _database = GetDatabase();
   List<MessageRecord> _messageList = [];
 
-  @override
   Stream<MessageState> mapEventToState(
     MessageEvent event,
   ) async* {

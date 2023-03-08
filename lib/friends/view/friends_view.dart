@@ -1,7 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:paper_tube/friends/bloc/add_friend_bloc.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paper_tube/conversation/view/conversation_view.dart';
 import 'package:paper_tube/friends/bloc/friends_bloc.dart';

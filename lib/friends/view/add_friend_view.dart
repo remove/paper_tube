@@ -19,7 +19,7 @@ class _AddFriendViewState extends State<AddFriendView> {
 
   @override
   void initState() {
-    ServicesBinding.instance?.addPostFrameCallback((timeStamp) {
+    ServicesBinding.instance.addPostFrameCallback((timeStamp) {
       _focusNode.requestFocus();
     });
     IMCore().getUserId().then((value) => _userId = value);
