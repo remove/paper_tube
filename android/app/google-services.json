@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "986030158527",
+    "project_id": "paper-tube-a9b88",
+    "storage_bucket": "paper-tube-a9b88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986030158527:android:45d69450b9071dbe454c0a",
+        "android_client_info": {
+          "package_name": "com.example.paper_tube"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986030158527-8274sm2lcqc72cdb327i1cmg2pd4depa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRe1gB2XR_J2gIDkyOxeUbNXPAEqpZkj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986030158527-8274sm2lcqc72cdb327i1cmg2pd4depa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

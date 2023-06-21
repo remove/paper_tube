@@ -29,9 +29,7 @@ class _ChatViewState extends State<ChatView> {
   void initState() {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == 0) {
-        context
-            .read<MessageBloc>()
-            .add(MessageMoreHistoryLoad(limit, _messages.length));
+        context.read<MessageBloc>().add(MessageMoreHistoryLoad(limit, _messages.length));
       }
     });
     super.initState();
@@ -77,27 +75,20 @@ class _ChatViewState extends State<ChatView> {
                     builder: (context, state) {
                       if (state is MessageHistoryPushToUI) {
                         _messages = state.messageRecord;
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((timeStamp) {
-                          _scrollController.jumpTo(
-                              _scrollController.position.maxScrollExtent);
+                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                         });
-                        context
-                            .read<MessageBloc>()
-                            .add(MessageUILoadedCompleted());
+                        context.read<MessageBloc>().add(MessageUILoadedCompleted());
                       } else if (state is MessageNewTextPushToUI) {
                         _messages.insert(0, state.chatRecord);
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((timeStamp) {
+                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
                             curve: const Cubic(.38, 0.7, 0.125, 1),
                             duration: const Duration(milliseconds: 390),
                           );
                         });
-                        context
-                            .read<MessageBloc>()
-                            .add(MessageUILoadedCompleted());
+                        context.read<MessageBloc>().add(MessageUILoadedCompleted());
                       } else if (state is MessageMoreHistoryPushToUI) {
                         if (state.messageRecord.isNotEmpty) {
                           _messages.addAll(state.messageRecord);
@@ -106,9 +97,7 @@ class _ChatViewState extends State<ChatView> {
                       return ListView.builder(
                         physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.only(
-                          bottom: _mediaQuery.viewInsets.bottom +
-                              _mediaQuery.padding.bottom +
-                              55,
+                          bottom: _mediaQuery.viewInsets.bottom + _mediaQuery.padding.bottom + 55,
                           top: 90,
                         ),
                         cacheExtent: double.maxFinite,
@@ -116,8 +105,7 @@ class _ChatViewState extends State<ChatView> {
                         itemCount: _messages.length,
                         itemBuilder: (context, index) {
                           return MessageBubble(
-                            messageRecord:
-                                _messages[_messages.length - 1 - index],
+                            messageRecord: _messages[_messages.length - 1 - index],
                           );
                         },
                       );

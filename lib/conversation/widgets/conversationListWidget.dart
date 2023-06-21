@@ -6,7 +6,7 @@ import 'package:paper_tube/chat/view/chat_view.dart';
 import 'package:paper_tube/conversation/bloc/conversation_bloc.dart';
 import 'package:paper_tube/route/aero_page_route.dart';
 import 'package:paper_tube/widget/avatar.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_conversation.dart';
 
 class ContactListWidget extends StatelessWidget {
   const ContactListWidget({

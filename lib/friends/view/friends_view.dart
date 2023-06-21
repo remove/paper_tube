@@ -11,7 +11,7 @@ import 'package:paper_tube/im/im_core.dart';
 import 'package:paper_tube/models/friend_dao.dart';
 import 'package:paper_tube/route/aero_page_route.dart';
 import 'package:paper_tube/widget/avatar.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_info.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_friend_info.dart';
 
 class FriendsView extends StatefulWidget {
   const FriendsView({Key? key}) : super(key: key);

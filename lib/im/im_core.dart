@@ -5,32 +5,29 @@ import 'package:paper_tube/im/friend_check_type.dart';
 import 'package:paper_tube/models/friend_dao.dart';
 import 'package:paper_tube/models/get_database.dart';
 import 'package:paper_tube/utils/generate_test_user_sig.dart';
-import 'package:tencent_im_sdk_plugin/enum/V2TimAdvancedMsgListener.dart';
-import 'package:tencent_im_sdk_plugin/enum/V2TimConversationListener.dart';
-import 'package:tencent_im_sdk_plugin/enum/V2TimFriendshipListener.dart';
-import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
-import 'package:tencent_im_sdk_plugin/enum/friend_application_type_enum.dart';
-import 'package:tencent_im_sdk_plugin/enum/friend_response_type_enum.dart';
-import 'package:tencent_im_sdk_plugin/enum/friend_type_enum.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
-import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_friend_info.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
-import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
+import 'package:tencent_cloud_chat_sdk/enum/V2TimAdvancedMsgListener.dart';
+import 'package:tencent_cloud_chat_sdk/enum/V2TimConversationListener.dart';
+import 'package:tencent_cloud_chat_sdk/enum/V2TimFriendshipListener.dart';
+import 'package:tencent_cloud_chat_sdk/enum/V2TimSDKListener.dart';
+import 'package:tencent_cloud_chat_sdk/enum/friend_application_type_enum.dart';
+import 'package:tencent_cloud_chat_sdk/enum/friend_response_type_enum.dart';
+import 'package:tencent_cloud_chat_sdk/enum/friend_type_enum.dart';
+import 'package:tencent_cloud_chat_sdk/enum/log_level_enum.dart';
+import 'package:tencent_cloud_chat_sdk/manager/v2_tim_manager.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_conversation.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_friend_info.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_message.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_user_full_info.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_value_callback.dart';
+import 'package:tencent_cloud_chat_sdk/tencent_im_sdk_plugin.dart';
 
 class IMCore {
   static final IMCore _imCore = IMCore._internal();
   final V2TIMManager _manager = TencentImSDKPlugin.v2TIMManager;
   final MyDatabase _database = GetDatabase().myDatabase;
-  final StreamController<V2TimMessage> messageStream =
-      StreamController.broadcast();
-  final StreamController<V2TimConversation> conversationStream =
-      StreamController.broadcast();
-  final StreamController<dynamic> addFriendStream =
-      StreamController.broadcast();
+  final StreamController<V2TimMessage> messageStream = StreamController.broadcast();
+  final StreamController<V2TimConversation> conversationStream = StreamController.broadcast();
+  final StreamController<dynamic> addFriendStream = StreamController.broadcast();
 
   factory IMCore() {
     return _imCore;
@@ -55,8 +52,8 @@ class IMCore {
     if (state.data == 3) {
       String userID = "aero";
       String userSig = new GenerateTestUserSig(
-        sdkappid: 1400413627,
-        key: "dfbd4b0ecce28bb864221e1e9e3aaf6980249da4fe7385d2a79e804fe9d69af1",
+        sdkappid: 1400557767,
+        key: "d1fe8b6178ed4cde01c03fe35bc826025fe328274055b5673ff27a8cc44ac6b4",
       ).genSig(
         identifier: userID,
         expire: 7 * 24 * 60 * 1000, // userSIg有效期
@@ -88,8 +85,7 @@ class IMCore {
 
   ///会话列表监听
   conversationListener() {
-    _manager.v2ConversationManager.setConversationListener(
-        listener: V2TimConversationListener(
+    _manager.v2ConversationManager.setConversationListener(listener: V2TimConversationListener(
       onConversationChanged: (conversationList) {
         conversationStream.add(conversationList[0]);
       },
@@ -100,22 +96,19 @@ class IMCore {
   friendListener() {
     _manager.v2TIMFriendshipManager.setFriendListener(
       listener: V2TimFriendshipListener(
-        onFriendApplicationListAdded: (applicationList) => addFriendStream
-            .add(FriendsApplicationListAddFromImCore(applicationList)),
-        onFriendApplicationListDeleted: (userIDList) => addFriendStream
-            .add(FriendsApplicationListDeletedFromImCore(userIDList[0])),
-        onFriendListAdded: (users) =>
-            addFriendStream.add(FriendsListReceivedRefreshFromIMCore()),
-        onFriendListDeleted: (userList) =>
-            addFriendStream.add(FriendsListReceivedRefreshFromIMCore()),
+        onFriendApplicationListAdded: (applicationList) =>
+            addFriendStream.add(FriendsApplicationListAddFromImCore(applicationList)),
+        onFriendApplicationListDeleted: (userIDList) =>
+            addFriendStream.add(FriendsApplicationListDeletedFromImCore(userIDList[0])),
+        onFriendListAdded: (users) => addFriendStream.add(FriendsListReceivedRefreshFromIMCore()),
+        onFriendListDeleted: (userList) => addFriendStream.add(FriendsListReceivedRefreshFromIMCore()),
       ),
     );
   }
 
   ///获取新好友申请列表
   Future<List<Friend>?> getNewFriendsApplicationList() async {
-    var result =
-        await _manager.v2TIMFriendshipManager.getFriendApplicationList();
+    var result = await _manager.v2TIMFriendshipManager.getFriendApplicationList();
     var applicationList = result.data?.friendApplicationList;
     applicationList?.removeWhere((element) => element?.type == 2);
     if (applicationList != null) {
@@ -181,8 +174,7 @@ class IMCore {
   }
 
   Future<V2TimMessage> sendImageMessage(String path, String userId) async {
-    var result = await _manager.v2TIMMessageManager
-        .sendImageMessage(imagePath: path, receiver: userId, groupID: "");
+    var result = await _manager.v2TIMMessageManager.sendImageMessage(imagePath: path, receiver: userId, groupID: "");
     return result.data as V2TimMessage;
   }
 
@@ -192,8 +184,8 @@ class IMCore {
 
   ///好友关系检查
   Future<FriendCheckType?> friendCheck(String userId) async {
-    var result = await _manager.v2TIMFriendshipManager.checkFriend(
-        userIDList: [userId], checkType: FriendTypeEnum.V2TIM_FRIEND_TYPE_BOTH);
+    var result = await _manager.v2TIMFriendshipManager
+        .checkFriend(userIDList: [userId], checkType: FriendTypeEnum.V2TIM_FRIEND_TYPE_BOTH);
     int? resultType = result.data?[0].resultType;
     if (resultType != null) {
       return FriendCheckType.values[resultType];
@@ -203,8 +195,7 @@ class IMCore {
 
   ///获取好友列表
   Future<List<V2TimFriendInfo>?> getFriendList() async {
-    V2TimValueCallback<List<V2TimFriendInfo>>? friends =
-        await _manager.getFriendshipManager().getFriendList();
+    V2TimValueCallback<List<V2TimFriendInfo>>? friends = await _manager.getFriendshipManager().getFriendList();
     return friends.data;
   }
 
@@ -219,9 +210,7 @@ class IMCore {
   ///获取会话列表
   Future<List<V2TimConversation?>?> getConversationList() async {
     List<V2TimConversation?>? conversationList;
-    await _manager.v2ConversationManager
-        .getConversationList(nextSeq: "0", count: 100)
-        .then(
+    await _manager.v2ConversationManager.getConversationList(nextSeq: "0", count: 100).then(
           (value) => conversationList = value.data?.conversationList,
         );
     return conversationList;

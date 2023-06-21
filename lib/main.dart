@@ -5,12 +5,13 @@ import 'package:paper_tube/friends/bloc/friends_bloc.dart';
 import 'package:paper_tube/friends/view/friends_view.dart';
 import 'package:paper_tube/im/im_core.dart';
 import 'package:paper_tube/models/get_database.dart';
-import 'package:paper_tube/parse/parse_core.dart';
+
+import 'firebase/firebase_core.dart';
 
 void main() async {
   runApp(MyApp());
   GetDatabase();
-  ParseCore();
+  FireBaseService.initialize();
 }
 
 class MyApp extends StatelessWidget {

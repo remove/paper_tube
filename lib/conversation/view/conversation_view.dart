@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paper_tube/conversation/bloc/conversation_bloc.dart';
 import 'package:paper_tube/conversation/widgets/conversationListWidget.dart';
 import 'package:paper_tube/im/im_core.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_conversation.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_conversation.dart';
 
 class ConversationView extends StatefulWidget {
   const ConversationView({Key? key}) : super(key: key);

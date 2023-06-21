@@ -5,9 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:paper_tube/im/im_core.dart';
-import 'package:paper_tube/models/friend_dao.dart';
-import 'package:paper_tube/models/get_database.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_message.dart';
+
+import '../../models/friend_dao.dart';
+import '../../models/get_database.dart';
 
 part 'message_event.dart';
 
@@ -30,8 +31,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     if (event is MessageHistoryLoadedFromDatabase) {
       yield MessageHistoryPushToUI(_messageList);
     } else if (event is MessageMoreHistoryLoad) {
-      var historyList = await _database.myDatabase
-          .getHistoryRecords(userId, event.limit, event.offset);
+      var historyList = await _database.myDatabase.getHistoryRecords(userId, event.limit, event.offset);
       yield MessageMoreHistoryPushToUI(historyList);
     } else if (event is MessageUILoadedCompleted) {
       yield MessageListener();
@@ -99,8 +99,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     return await _imageMessageTODatabase(file.path, result);
   }
 
-  Future<MessageRecord> _imageMessageTODatabase(
-      String localPath, V2TimMessage v2timMessage) async {
+  Future<MessageRecord> _imageMessageTODatabase(String localPath, V2TimMessage v2timMessage) async {
     int index = await _database.myDatabase.insertChatContent(
       MessageRecord(
         type: 3,

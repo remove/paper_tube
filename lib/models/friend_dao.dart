@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
@@ -41,11 +41,11 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file);
+    return NativeDatabase.createInBackground(file);
   });
 }
 
-@UseMoor(tables: [Friends, MessageRecords, MessageResources])
+@DriftDatabase(tables: [Friends, MessageRecords, MessageResources])
 class MyDatabase extends _$MyDatabase {
   MyDatabase() : super(_openConnection());
 
@@ -77,8 +77,7 @@ class MyDatabase extends _$MyDatabase {
     return (select(friends)..where((tbl) => tbl.userId.equals(userId))).get();
   }
 
-  Future<List<MessageRecord>> getHistoryRecords(
-      String userId, int limit, int offset) {
+  Future<List<MessageRecord>> getHistoryRecords(String userId, int limit, int offset) {
     return (select(messageRecords)
           ..where((tbl) => tbl.userId.equals(userId))
           ..orderBy([(t) => OrderingTerm.desc(t.index)])

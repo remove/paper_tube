@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:paper_tube/im/friend_check_type.dart';
 import 'package:paper_tube/im/im_core.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
+import 'package:tencent_cloud_chat_sdk/models/v2_tim_user_full_info.dart';
 
 part 'add_friend_event.dart';
 
