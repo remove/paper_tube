@@ -11,23 +11,21 @@ part 'add_friend_event.dart';
 part 'add_friend_state.dart';
 
 class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
-  AddFriendBloc() : super(AddFriendInitial());
+  AddFriendBloc() : super(AddFriendInitial()) {
+    on((event, emit) async {
+      if (event is AddFriendSearched) {
+        emit(AddFriendResult(
+          await IMCore().getUserInfo(event.userId),
+          await _friendCheck(event.userId),
+        ));
+      } else if (event is AddFriendApplication) {
+        await _addFriend(event.userId, event.addNote);
+        emit(AddFriendApplicationSend());
+      }
+    });
+  }
 
   final IMCore _imCore = IMCore();
-
-  Stream<AddFriendState> mapEventToState(
-    AddFriendEvent event,
-  ) async* {
-    if (event is AddFriendSearched) {
-      yield AddFriendResult(
-        await IMCore().getUserInfo(event.userId),
-        await _friendCheck(event.userId),
-      );
-    } else if (event is AddFriendApplication) {
-      await _addFriend(event.userId, event.addNote);
-      yield AddFriendApplicationSend();
-    }
-  }
 
   _addFriend(String userId, String addNote) async {
     await _imCore.addFriend(userId, addNote);

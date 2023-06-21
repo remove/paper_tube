@@ -37,7 +37,7 @@ class IMCore {
 
   init() async {
     await _manager.initSDK(
-      sdkAppID: 1400413627,
+      sdkAppID: 1400557767,
       loglevel: LogLevelEnum.V2TIM_LOG_INFO,
       listener: V2TimSDKListener(),
     );

@@ -16,6 +16,32 @@ part 'message_state.dart';
 
 class MessageBloc extends Bloc<MessageEvent, MessageState> {
   MessageBloc(this.userId) : super(MessageListener()) {
+    on((event, emit) async {
+      if (event is MessageHistoryLoadedFromDatabase) {
+        emit(MessageHistoryPushToUI(_messageList));
+      } else if (event is MessageMoreHistoryLoad) {
+        var historyList = await _database.myDatabase.getHistoryRecords(userId, event.limit, event.offset);
+        emit(MessageMoreHistoryPushToUI(historyList));
+      } else if (event is MessageUILoadedCompleted) {
+        emit(MessageListener());
+      } else if (event is MessageReceivedFromIMCore) {
+        emit(MessageNewTextPushToUI(event.messageRecord));
+      } else if (event is MessageReceivedTextFromUI) {
+        _receivedNewTextFromUI(event.text);
+        emit(MessageNewTextPushToUI(
+          MessageRecord(
+            type: 1,
+            userId: userId,
+            content: event.text,
+            self: true,
+            time: DateTime.now(),
+          ),
+        ));
+      } else if (event is MessageReceivedImageFromUI) {
+        MessageRecord messageRecord = await _receivedNewImageFromUI(event.file);
+        emit(MessageNewTextPushToUI(messageRecord));
+      }
+    });
     _loadMessageHistoryFromDatabase();
     _imCoreMessageListener();
   }
@@ -24,35 +50,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   final IMCore _imCore = IMCore();
   final GetDatabase _database = GetDatabase();
   List<MessageRecord> _messageList = [];
-
-  Stream<MessageState> mapEventToState(
-    MessageEvent event,
-  ) async* {
-    if (event is MessageHistoryLoadedFromDatabase) {
-      yield MessageHistoryPushToUI(_messageList);
-    } else if (event is MessageMoreHistoryLoad) {
-      var historyList = await _database.myDatabase.getHistoryRecords(userId, event.limit, event.offset);
-      yield MessageMoreHistoryPushToUI(historyList);
-    } else if (event is MessageUILoadedCompleted) {
-      yield MessageListener();
-    } else if (event is MessageReceivedFromIMCore) {
-      yield MessageNewTextPushToUI(event.messageRecord);
-    } else if (event is MessageReceivedTextFromUI) {
-      _receivedNewTextFromUI(event.text);
-      yield MessageNewTextPushToUI(
-        MessageRecord(
-          type: 1,
-          userId: userId,
-          content: event.text,
-          self: true,
-          time: DateTime.now(),
-        ),
-      );
-    } else if (event is MessageReceivedImageFromUI) {
-      MessageRecord messageRecord = await _receivedNewImageFromUI(event.file);
-      yield MessageNewTextPushToUI(messageRecord);
-    }
-  }
 
   _loadMessageHistoryFromDatabase() async {
     _messageList = await _database.myDatabase.getHistoryRecords(userId, 20, 0);

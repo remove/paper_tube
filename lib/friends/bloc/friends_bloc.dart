@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:paper_tube/im/im_core.dart';
@@ -12,31 +10,28 @@ part 'friends_state.dart';
 
 class FriendsBloc extends Bloc<FriendsEvent, FriendsState> {
   FriendsBloc() : super(FriendsInitial()) {
+    on((event, emit) {
+      if (event is FriendsLoadCompleted) {
+        emit(FriendsListening());
+      } else if (event is FriendsAddApplication) {
+        emit(FriendsReceivedNewApplication(event.friends));
+      } else if (event is FriendsApplicationListDeletedFromImCore) {
+        emit(FriendsReceivedDelApplication(event.userId));
+      } else if (event is FriendsAllowed) {
+        _allowNewFriendRequest(event.userId);
+      } else if (event is FriendsRejected) {
+        _rejectNewFriendRequest(event.userId);
+      } else if (event is FriendsListReceivedRefreshFromIMCore) {
+        emit(FriendsListRefresh());
+      } else if (event is FriendsDeleted) {
+        _delFriend(event.userId);
+        emit(FriendsDeletedAfterPopPage());
+      }
+    });
     _friendListener();
   }
 
   final IMCore _imCore = IMCore();
-
-  Stream<FriendsState> mapEventToState(
-    FriendsEvent event,
-  ) async* {
-    if (event is FriendsLoadCompleted) {
-      yield FriendsListening();
-    } else if (event is FriendsAddApplication) {
-      yield FriendsReceivedNewApplication(event.friends);
-    } else if (event is FriendsApplicationListDeletedFromImCore) {
-      yield FriendsReceivedDelApplication(event.userId);
-    } else if (event is FriendsAllowed) {
-      _allowNewFriendRequest(event.userId);
-    } else if (event is FriendsRejected) {
-      _rejectNewFriendRequest(event.userId);
-    } else if (event is FriendsListReceivedRefreshFromIMCore) {
-      yield FriendsListRefresh();
-    } else if (event is FriendsDeleted) {
-      _delFriend(event.userId);
-      yield FriendsDeletedAfterPopPage();
-    }
-  }
 
   ///同意好友申请
   _allowNewFriendRequest(String userId) {
@@ -60,19 +55,13 @@ class FriendsBloc extends Bloc<FriendsEvent, FriendsState> {
       if (event is List<V2TimFriendApplication>) {
         event.removeWhere((element) => element.type == 2);
         if (event is FriendsApplicationListAddFromImCore) {
-          add(
-            FriendsAddApplication(
-              List.of(
-                event.map(
-                  (e) => Friend(
-                    avatarUrl: e.faceUrl,
-                    nickName: e.nickname,
-                    userId: e.userID,
-                  ),
-                ),
-              ),
+          add(FriendsAddApplication(List.of(event.map(
+            (e) => Friend(
+              avatarUrl: e.faceUrl,
+              nickName: e.nickname,
+              userId: e.userID,
             ),
-          );
+          ))));
         }
 
         ///监听到删除好友请求列表

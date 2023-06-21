@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:paper_tube/im/im_core.dart';
@@ -11,19 +9,16 @@ part 'conversation_state.dart';
 
 class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
   ConversationBloc() : super(ConversationInitial()) {
+    on((event, emit) {
+      if (event is ConversationLoadCompleted) {
+        emit(ConversationListening());
+      } else if (event is ConversationChangeFromIMCore) {
+        emit(ConversationChanged(event.v2timConversation));
+      } else if (event is ConversationMarkMessageRead) {
+        _markMessageRead(event.userId);
+      }
+    });
     _receivedNewConversationFromIMCore();
-  }
-
-  Stream<ConversationState> mapEventToState(
-    ConversationEvent event,
-  ) async* {
-    if (event is ConversationLoadCompleted) {
-      yield ConversationListening();
-    } else if (event is ConversationChangeFromIMCore) {
-      yield ConversationChanged(event.v2timConversation);
-    } else if (event is ConversationMarkMessageRead) {
-      _markMessageRead(event.userId);
-    }
   }
 
   _markMessageRead(String userId) {

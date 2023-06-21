@@ -92,12 +92,10 @@ class _FriendsViewState extends State<FriendsView> {
               _getFriendsList(context);
               _getNewFriendsList(context);
             } else if (state is FriendsReceivedNewApplication) {
-              _newFriends.removeWhere(
-                  (element) => element.userId == state.friends[0].userId);
+              _newFriends.removeWhere((element) => element.userId == state.friends[0].userId);
               _newFriends.insert(0, state.friends[0]);
             } else if (state is FriendsReceivedDelApplication) {
-              _newFriends
-                  .removeWhere((element) => element.userId == state.userId);
+              _newFriends.removeWhere((element) => element.userId == state.userId);
             } else if (state is FriendsListRefresh) {
               _getFriendsList(context);
               _getNewFriendsList(context);
@@ -152,10 +150,9 @@ class _FriendsViewState extends State<FriendsView> {
               ),
               Text(
                 friend.nickName ?? friend.userId as String,
-                style:
-                    MediaQuery.of(context).platformBrightness == Brightness.dark
-                        ? const TextStyle(color: Colors.white)
-                        : const TextStyle(color: Colors.black),
+                style: MediaQuery.of(context).platformBrightness == Brightness.dark
+                    ? const TextStyle(color: Colors.white)
+                    : const TextStyle(color: Colors.black),
               ),
               Spacer(),
               TextButton(
@@ -167,9 +164,7 @@ class _FriendsViewState extends State<FriendsView> {
                     ),
                   ),
                 ),
-                onPressed: () => context
-                    .read<FriendsBloc>()
-                    .add(FriendsRejected(friend.userId as String)),
+                onPressed: () => context.read<FriendsBloc>().add(FriendsRejected(friend.userId as String)),
                 child: Text(
                   "拒绝",
                   style: TextStyle(color: Colors.white),
@@ -185,9 +180,7 @@ class _FriendsViewState extends State<FriendsView> {
                     ),
                   ),
                 ),
-                onPressed: () => context
-                    .read<FriendsBloc>()
-                    .add(FriendsAllowed(friend.userId as String)),
+                onPressed: () => context.read<FriendsBloc>().add(FriendsAllowed(friend.userId as String)),
                 child: Text(
                   "同意",
                   style: TextStyle(color: Colors.white),
@@ -228,10 +221,9 @@ class _FriendsViewState extends State<FriendsView> {
             ),
             Text(
               friend.friendRemark ?? friend.userID,
-              style:
-                  MediaQuery.of(context).platformBrightness == Brightness.dark
-                      ? const TextStyle(color: Colors.white)
-                      : const TextStyle(color: Colors.black),
+              style: MediaQuery.of(context).platformBrightness == Brightness.dark
+                  ? const TextStyle(color: Colors.white)
+                  : const TextStyle(color: Colors.black),
             ),
           ],
         ),
@@ -270,14 +262,18 @@ class FriendData extends ISuspensionBean {
   });
 
   String transChineseToPinYin() {
-    if (ChineseHelper.isChinese(friendRemark ?? "")) {
+    final showName = (friendRemark?.isNotEmpty ?? false)
+        ? friendRemark
+        : (nickName?.isNotEmpty ?? false)
+            ? nickName
+            : userID;
+    if (ChineseHelper.isChinese(showName!)) {
       return PinyinHelper.getFirstWordPinyin(friendRemark as String);
     } else {
-      return friendRemark ?? userID;
+      return showName;
     }
   }
 
   @override
-  String getSuspensionTag() =>
-      transChineseToPinYin().substring(0, 1).toUpperCase();
+  String getSuspensionTag() => transChineseToPinYin().substring(0, 1).toUpperCase();
 }
